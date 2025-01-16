@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" 
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles/output.css" />
+  <title>N'Canto Mineiro</title>
+</head>
+<body class="bg-gray-100">
+  <!-- HEADER -->
+  <header class="w-full h-[420px] bg-zinc-900 bg-home bg-cover bg-center">
+    <div class="w-full h-full flex flex-col justify-center items-center">
+      <img 
+        src="./assets/Logo N'Canto.png" 
+        alt="Logo N'Canto"
+        class="w-32 h-32 rounded-full shadow-lg hover:scale-110 duration-200"
+      />
+      <h1 class="text-4xl mt-4 mb-2 font-bold text-white">
+        N'Canto Mineiro
+      </h1>
+      <span class="text-1xl font-medium mb-5 text-white"> 
+        Rua: Joaquim Vicente Alves, Oficina NilCar.
+      </span>
+    </div>
+  </header>
+
+  <!-- Horário de Funcionamento -->
+  <div class="w-full h-full flex flex-col justify-center items-center mt-5">
+    <div class="bg-green-600 px-5 py-1 rounded hover:translate-x-1 duration-150" id="date-span">
+      <span class="text-white font-medium">Seg á Sex - 14:30 as 18:00</span>
+    </div>
+  </div>
+
+  <!-- Cardápio -->
+  <h2 class="text-2xl md:text-3xl font-bold text-center mt-9 mb-6"> 
+    Conheça nosso Cardápio
+  </h2>
+  <p class="mb-4 text-center font-semibold">Obs: Entregas a partir de R$ 10,00.</p>
+
+  <!-- Abas -->
+  <div class="container mx-auto p-4">
+    <div class="flex space-x-4 mb-4">
+      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="salgados-bebidas">
+        Salgados e Bebidas
+      </button>
+      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="acai-doces">
+        Açaí e Doces
+      </button>
+    </div>
+
+    <!-- Seções do Cardápio -->
+     <div id="menu">
+        <section id="salgados-bebidas" class="py-16">
+        <h2 class="text-2xl font-bold mb-4">Salgados e Bebidas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-16">
+            <div class="flex gap-2">
+            <img
+                src="./assets/hamburguer.jpeg"
+                alt="Hamburguer assado"
+                class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+            />
+            <div class="w-full">
+                <p class="font-bold">Hamburguer de pizza</p>
+                <p class="text-sm">Queijo, presunto, calabresa, orégano e molho.</p>
+                <div class="flex justify-items-end gap-3 mt-3">
+                <p class="font-bold text-lg">R$ 7,00</p>
+                <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" onclick="decreaseCount('item1')">-</button>
+                <span 
+                data-name="Hamburguer assado" 
+                class="text-xl font-bold">0</span>
+                <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" onclick="increaseCount('item1')">+</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+
+        </section>
+     </div>
+  </div>
+
+<script>
+    // Função de Scroll Suave
+    document.querySelectorAll('.tab-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Funções para Incrementar e Decrementar Contador
+    function increaseCount(id) {
+      const element = document.getElementById(id);
+      let currentValue = parseInt(element.textContent);
+      element.textContent = currentValue + 1;
+    }
+
+    function decreaseCount(id) {
+      const element = document.getElementById(id);
+      let currentValue = parseInt(element.textContent);
+      if (currentValue > 0) {
+        element.textContent = currentValue - 1;
+      }
+    }
+  </script>
+</body>
+</html>
+      <!--
+        <div id="menu"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-16 py-10">
+            
+                <div class="flex gap-2">
+                <img
+                src="./assets/hamburguer.jpeg"
+                alt="Hamburguer assado"
+                class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+                />
+                <div class="w-full">
+                <p class="font-bold">Hamburguer de pizza</p>
+                <p class="text-sm">Queijo, presunto, calabresa, orégano e molho.</p>
+                <div class="flex justify-items-end gap-3  mt-3">
+                    <p class="font-bold text-lg">R$ 7,00</p>
+                    <button class="bg-red-500 text-white px-2 py-0 rounded-md hover:bg-red-600" onclick="decreaseCount('item1')">-</button>
+                    <span
+                    id="item1"
+                    class="text-xl font-bold"
+                    data-name="Hamburguer assado"
+                    data-price = "7,00">0</span>
+                    <button class="bg-green-500 text-white px-2 py-0 rounded-md hover:bg-green-600" onclick="increaseCount('item1')">+</button>
+                </div>
+                </div>
+            </div>
+    
+      </div>
+      
+    </section>
+-->
+
