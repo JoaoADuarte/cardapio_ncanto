@@ -18,125 +18,110 @@ const paymentwarn = document.getElementById("payment-warn");
 
 let total = 0; // Variável global para o total
 let trocoMessage = ""; // Variável global para a mensagem de troco
-let cartItems = []; // Armazena todos os itens do carrinho
+ // Armazena todos os itens do carrinho
 let selectedSize = null; // Armazena o tamanho do açaí selecionado
 let selectedComplements = {}; // Armazena os complementos selecionados
 
+
+function renderCartItem(item, index) {
+    const cartItemElement = document.createElement("div");
+    cartItemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
+
+    let itemTotal = item.price * item.quantity;
+    cartItemElement.innerHTML = `
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="font-bold">${item.name}</p>
+                <p>Quantidade: <button class="decrement-btn" data-id="${index}" data-name="${item.name}">-</button> ${item.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
+                <p class="font-medium mt-2">R$ ${(item.price * item.quantity).toFixed(2)}</p>
+            </div>
+        </div>
+    `;
+
+    if (item.type === "acai" && item.complements && item.complements.length > 0) {
+        cartItemElement.innerHTML += `<p class="mt-2 font-bold">Complementos:</p>`;
+        item.complements.forEach(complement => {
+            cartItemElement.innerHTML += `
+                <p>${complement.name} <button class="decrement-btn">-</button> ${complement.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
+            `;
+            itemTotal += complement.price * complement.quantity;
+        });
+    }
+
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "Remover";
+    removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
+    removeButton.addEventListener("click", () => removeFromCart(item.name));
+    cartItemElement.appendChild(removeButton);
+    return { element: cartItemElement, total: itemTotal };
+}
 
 function updateCartModal() {
     const cartItemsContainer = document.getElementById("cart-items");
     const cartTotal = document.getElementById("cart-total");
     const cartCounter = document.getElementById("cart-count");
-
     let total = 0;
-    // Limpa o conteúdo atual do carrinho
+
     cartItemsContainer.innerHTML = "";
-
-    // Itera sobre os itens do carrinho e os exibe
     cartItems.forEach((item, index) => {
-        const cartItemElement = document.createElement("div");
-        cartItemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
-
-        // Exibe o nome, preço e quantidade do item
-        cartItemElement.innerHTML = `
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="font-bold">${item.name}</p>
-                    <p>Quantidade: <button class="decrement-btn" data-id="${index}" data-name="${item.name}">-</button> ${item.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
-                    <p class="font-medium mt-2">R$ ${(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-            </div>
-        `;
-
-
-        let itemTotal = item.price * item.quantity;
-
-        // Se for um açaí, exibe os complementos e adiciona seus valores ao total
-        if (item.type === "acai" && item.complements && item.complements.length > 0) {
-            cartItemElement.innerHTML += `<p class="mt-2 font-bold">Complementos:</p>`;
-            item.complements.forEach(complement => {
-                cartItemElement.innerHTML += `
-                    <p>${complement.name} - Quantidade: ${complement.quantity}</p>
-                `;
-                // Adiciona o valor dos complementos ao total
-                itemTotal += complement.price * complement.quantity;
-            });
-        }
-
-        // Adiciona o valor do item principal ao total
+        const { element, total: itemTotal } = renderCartItem(item, index);
         total += itemTotal;
-
-        // Botão para remover o item do carrinho
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remover";
-        removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
-        removeButton.addEventListener("click", () => removeFromCart(item.name));
-
-        cartItemElement.appendChild(removeButton);
-        cartItemsContainer.appendChild(cartItemElement);
+        cartItemsContainer.appendChild(element);
     });
 
-
-    // Adiciona a taxa de entrega fixa ao total
     const deliveryFee = 2.00;
     const totalWithFee = total + deliveryFee;
-
-    // Atualiza o total e o contador do carrinho
     cartTotal.textContent = totalWithFee.toLocaleString("pt-br", {
         style: "currency",
         currency: "BRL"
     });
     cartCounter.textContent = cartItems.length;
 
-    // Exibe mensagem se o carrinho estiver vazio
     if (cartItems.length === 0) {
         cartItemsContainer.innerHTML = "<p class='text-center'>Seu carrinho está vazio.</p>";
         cartTotal.textContent = deliveryFee.toLocaleString("pt-br", {
             style: "currency",
             currency: "BRL"
-        }); // Exibe apenas a taxa de entrega
+        });
+    }
+}
+
+function updateMenuCounter() {
+    const cartCount = document.getElementById("cart-count");
+    const menuCount = document.getElementById("menu-count"); // Supondo que você tenha um elemento com id "menu-count" no menu
+    let itemCount = 0;
+
+    cartItems.forEach(item => {
+        itemCount += item.quantity;
+    });
+
+    cartCount.textContent = itemCount;
+    if (menuCount) {
+        menuCount.textContent = itemCount;
     }
 }
 
 
-
-// Função para adicionar item ao carrinho
-function addToCart(name, price) {
-    const newItem = {
-      name: name,
-      price: price,
-      quantity: 1
-    };
-    cartItems.push(newItem);
-    updateCartModal(); // Atualiza a interface do carrinho
-  }
   
  // Função para atualizar a quantidade no menu principal
-function updateMenuQuantity(name, quantity) {
-    const menuItem = document.querySelector(`.menu-item[data-name="${name}"]`);
-    if (menuItem) {
-        const quantityElement = menuItem.querySelector(".item-quantity");
-        if (quantityElement) {
-            quantityElement.textContent = quantity;
-        }
+ function updateMenuQuantity(name, quantity) {
+    const quantityElement = document.querySelector(`[data-name="${name}"] + .text-xl.font-bold`);
+    if (quantityElement) {
+        quantityElement.textContent = quantity;
     }
-} 
+}
 // Função para remover item do carrinho e atualizar o menu principal
 function removeFromCart(name) {
-    const itemIndex = cartItems.findIndex((item) => item.name === name);
+    const itemIndex = cartItems.findIndex(item => item.name === name);
     if (itemIndex !== -1) {
         const item = cartItems[itemIndex];
         if (item.quantity > 1) {
-            item.quantity -= 1; // Diminui a quantidade no carrinho
+            item.quantity -= 1;
         } else {
-            cartItems.splice(itemIndex, 1); // Remove o item se a quantidade for 1
+            cartItems.splice(itemIndex, 1);
         }
-
-        // Atualiza a quantidade no menu principal
-        updateMenuQuantity(name, item.quantity);
-
-        updateCartModal(); // Atualiza o modal do carrinho
-        console.log(`Item removido: ${name}`);
+        updateCartUI();
+        updateMenuQuantity(name, cartItems.find(item => item.name === name)?.quantity || 0);
     }
 }
 
@@ -153,32 +138,27 @@ function removeFromCart(name) {
   });
 
 // Função para aumentar a quantidade
-function increaseCount(id, button) {
-    console.log(`Aumentando quantidade no button: ${id}`);
-    const countElement = document.getElementById(id);
-    let currentCount = parseInt(countElement.textContent);
-    countElement.textContent = currentCount + 1;
-
-    // Captura os dados do botão +
-    const itemName = button.getAttribute("data-name");
-    const itemPrice = parseFloat(button.getAttribute("data-price"));
-
-    console.log(`Dados capturados - Nome: ${itemName}, Preço: ${itemPrice}`);
-    addToCart(itemName, itemPrice);
+function incrementCartItem(index) {
+    console.log("Incrementando item com índice:", index); // Log para depuração
+    if (index >= 0 && index < cartItems.length) {
+        cartItems[index].quantity += 1;
+        console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
+        updateCartUI();
+        updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
+    }
 }
 
-// Função para diminuir a quantidade
-function decreaseCount(id, button) {
-    console.log(`Diminuindo quantidade: ${id}`);
-    const countElement = document.getElementById(id);
-    let currentCount = parseInt(countElement.textContent);
-
-    if (currentCount > 0) {
-        countElement.textContent = currentCount - 1;
-
-        // Captura os dados do botão -
-        const itemName = button.getAttribute("data-name");
-        removeFromCart(itemName); // Remove o item do carrinho
+function decrementCartItem(index) {
+    console.log("Decrementando item com índice:", index); // Log para depuração
+    if (index >= 0 && index < cartItems.length) {
+        if (cartItems[index].quantity > 1) {
+            cartItems[index].quantity -= 1;
+            console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
+            updateCartUI();
+            updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
+        } else {
+            removeFromCart(cartItems[index].name);
+        }
     }
 }
 
@@ -300,19 +280,16 @@ checkoutBtn.addEventListener("click", function () {
         alert("Seu carrinho está vazio. Adicione itens antes de finalizar o pedido.");
         return;
     }
-
     // Verifica o endereço
     if (!verificarEndereco()) {
         return; // Interrompe se o endereço for inválido
     }
-
     // Verifica o método de pagamento
     if (paymentMethodSelect.value === "_blank") {
         paymentwarn.classList.remove("hidden");
         paymentMethodSelect.classList.add("border-red-500");
         return; // Interrompe se o método de pagamento não for selecionado
     }
-
     // Verifica o valor do troco (se o pagamento for em dinheiro)
     if (paymentMethodSelect.value === "Dinheiro") {
         const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
@@ -322,7 +299,6 @@ checkoutBtn.addEventListener("click", function () {
             return; // Interrompe se o valor for insuficiente
         }
     }
-
     // Recalcula o total antes de enviar a mensagem
     let totalPedido = 0;
     cartItems.forEach((item) => {
@@ -429,7 +405,6 @@ if(isOpen) {
   });
 
 // -------------------------------------------------AÇAÍ FUNCTION-------------------------------------------------
-
 // Função para selecionar o tamanho do açaí
 function togglePressed(button) {
     // Remove a classe "pressed" de todos os botões de tamanho
@@ -449,19 +424,19 @@ function togglePressed(button) {
     // Mostra a seção de complementos
     document.getElementById('complementos-section').classList.remove('hidden');
 }
-
-
 // Função para selecionar o tamanho do açaí
 function selectSize(button) {
+    // Remove a classe "pressed" de todos os botões de tamanho
+    document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('bg-purple-600', 'text-white'));
+    // Adiciona a classe "pressed" ao botão clicado
+    button.classList.add('bg-purple-600', 'text-white');
+    // Armazena o tamanho e o preço selecionados
     selectedSize = {
         size: button.getAttribute("data-size"),
         price: parseFloat(button.getAttribute("data-price")),
     };
+    // Mostra a seção de complementos
     document.getElementById('complementos-section').classList.remove('hidden');
-    document.querySelectorAll('.size-btn').forEach(btn => {
-        btn.classList.remove('bg-purple-600', 'text-white');
-    });
-    button.classList.add('bg-purple-600', 'text-white');
 }
 
 // Função para ajustar a quantidade de complementos
@@ -498,135 +473,180 @@ function addacaiToOrder() {
         return;
     }
 
-    // Cria um objeto para o açaí com seus complementos
     const acaiItem = {
         type: "acai",
         name: `Açaí ${selectedSize.size}`,
         price: selectedSize.price,
         quantity: 1,
-        complements: [], // Lista de complementos
-    };
-
-    // Adiciona os complementos ao objeto do açaí
-    for (const [name, details] of Object.entries(selectedComplements)) {
-        if (details.quantity > 0) {
-            acaiItem.complements.push({
+        complements: Object.entries(selectedComplements)
+            .filter(([_, details]) => details.quantity > 0)
+            .map(([name, details]) => ({
                 name: name,
                 price: details.price,
                 quantity: details.quantity,
-            });
-        }
-    }
+            })),
+    };
 
-    // Adiciona o açaí (com complementos) ao carrinho
     cartItems.push(acaiItem);
 
     // Limpa as seleções temporárias
     selectedSize = null;
     selectedComplements = {};
-    document.querySelectorAll('.size-btn').forEach(btn => {
-        btn.classList.remove('bg-purple-600', 'text-white');
-    });
+    document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('bg-purple-600', 'text-white'));
     document.getElementById('complementos-section').classList.add('hidden');
     document.querySelectorAll('.increment-acai-btn, .decrement-acai-btn').forEach(btn => {
         const quantityElement = document.getElementById(btn.getAttribute('data-id'));
         quantityElement.textContent = 0;
     });
 
-    updateCartUI(); // Atualiza a interface do carrinho
+    updateCartUI();
     alert('Açaí adicionado ao carrinho!');
 }
 
+// Função para remover um item do carrinho
+let cartItems = []; // Armazena todos os itens do carrinho
+
+// Função para adicionar item ao carrinho
+function addToCart(name, price) {
+    let itemIndex = cartItems.findIndex(item => item.name === name);
+    if (itemIndex !== -1) {
+        cartItems[itemIndex].quantity += 1;
+    } else {
+        const newItem = {
+            name: name,
+            price: price,
+            quantity: 1
+        };
+        cartItems.push(newItem);
+    }
+    updateCartUI();
+    updateMenuQuantity(name, cartItems.find(item => item.name === name)?.quantity || 0);
+}
+
+// Função para remover item do carrinho
+function removeItemFromCart(index) {
+    if (index >= 0 && index < cartItems.length) {
+        cartItems.splice(index, 1);
+        updateCartUI();
+    }
+}
+
+// Função para incrementar a quantidade de um item no carrinho
+function incrementCartItem(index) {
+    console.log("Incrementando item com índice:", index); // Log para depuração
+    if (index >= 0 && index < cartItems.length) {
+        cartItems[index].quantity += 1;
+        console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
+        updateCartUI();
+        updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
+    }
+}
+
+function decrementCartItem(index) {
+    console.log("Decrementando item com índice:", index); // Log para depuração
+    if (index >= 0 && index < cartItems.length) {
+        if (cartItems[index].quantity > 1) {
+            cartItems[index].quantity -= 1;
+            console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
+            updateCartUI();
+            updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
+        } else {
+            removeFromCart(cartItems[index].name);
+        }
+    }
+}
+
+
 // Função para atualizar a interface do carrinho
 function updateCartUI() {
-  const cartItemsContainer = document.getElementById("cart-items");
-  const cartCount = document.getElementById("cart-count");
-  const cartTotal = document.getElementById("cart-total");
+    const cartItemsContainer = document.getElementById("cart-items");
+    const cartCount = document.getElementById("cart-count");
+    const cartTotal = document.getElementById("cart-total");
+    // Limpa o conteúdo atual do carrinho
+    cartItemsContainer.innerHTML = "";
+    let total = 0;
+    let itemCount = 0;
 
-  // Limpa o conteúdo atual do carrinho
-  cartItemsContainer.innerHTML = "";
+    // Itera sobre os itens do carrinho e os exibe
+    cartItems.forEach((item, index) => {
+        const itemElement = document.createElement("div");
+        itemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
 
-  let total = 0;
-  let itemCount = 0;
+        // Exibe o nome, preço e quantidade do item
+        itemElement.innerHTML = `
+            <p class="font-bold">${item.name} - R$ ${item.price.toFixed(2)}</p>
+            <p>Quantidade: 
+                <button class="decrement-btn" data-index="${index}">-</button> 
+                ${item.quantity} 
+                <button class="increment-btn" data-index="${index}">+</button>
+            </p>
+        `;
 
-  // Itera sobre os itens do carrinho e os exibe
-  cartItems.forEach((item, index) => {
-    const itemElement = document.createElement("div");
-    itemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
+        // Botão para remover o item do carrinho
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remover";
+        removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
+        removeButton.addEventListener("click", () => removeItemFromCart(index));
+        itemElement.appendChild(removeButton);
 
-    // Exibe o nome, preço e quantidade do item
-    itemElement.innerHTML = `
-        <p class="font-bold">${item.name} - R$ ${item.price.toFixed(2)}</p>
-        <p>Quantidade: ${item.quantity}</p>
-      `;
+        cartItemsContainer.appendChild(itemElement);
 
-    // Se for um açaí, exibe os complementos
-    if (item.type === "acai" && item.complements.length > 0) {
-      itemElement.innerHTML += `<p class="mt-2 font-bold">Complementos:</p>`;
-      item.complements.forEach(complement => {
-        itemElement.innerHTML += `
-            <p>${complement.name} - Quantidade: ${complement.quantity}</p>
-          `;
-      });
-    }
+        // Adiciona eventos de clique para os botões de incremento e decremento
+        const incrementBtn = itemElement.querySelector('.increment-btn');
+        const decrementBtn = itemElement.querySelector('.decrement-btn');
 
-    // Botão para remover o item do carrinho
-    const removeButton = document.createElement("button");
-    removeButton.textContent = "Remover";
-    removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
-    removeButton.addEventListener("click", () => removeItemFromCart(index));
+        incrementBtn.addEventListener('click', () => incrementCartItem(index));
+        decrementBtn.addEventListener('click', () => decrementCartItem(index));
 
-    itemElement.appendChild(removeButton);
-    cartItemsContainer.appendChild(itemElement);
+        // Atualiza o total e a contagem de itens
+        total += item.price * item.quantity;
+        itemCount += item.quantity;
+    });
 
-    // Atualiza o total e a contagem de itens
-    total += item.price * item.quantity;
-    itemCount += item.quantity;
-  });
-
-  // Atualiza o total e o contador do carrinho
-  cartTotal.textContent = total.toFixed(2);
-  cartCount.textContent = itemCount;
+    // Atualiza o total e o contador do carrinho
+    cartTotal.textContent = 'R$ ' + total.toFixed(2);
+    cartCount.textContent = itemCount;
 }
 
-// Função para remover um item do carrinho
-function removeItemFromCart(index) {
-  cartItems.splice(index, 1); // Remove o item do array
-  let total = 0; // Reset total before recalculating
 
-  cartItems.forEach(item => {
-    let itemTotal = item.price * item.quantity;
-    if (item.type === "acai" && item.complements.length > 0) {
-      item.complements.forEach(complement => {
-        itemTotal += complement.price * complement.quantity;
-      });
-    }
-    total += itemTotal; // Add item total to overall total
-  });
+// Evento de clique para adicionar item ao carrinho
+// Evento de clique para adicionar/remover item no menu
+document.getElementById("menu").addEventListener("click", function(event) {
+    let incrementButton = event.target.closest(".increment-btn");
+    let decrementButton = event.target.closest(".decrement-btn");
 
-  cartTotal.textContent = 'R$ ${total.toFixed(2)}';
-  updateCartModal();
-}
-
-// Evento de clique para adicionar ou remover item do carrinho
-// Adicionar item
-menu.addEventListener("click", function(event) {
-    let parentButton = event.target.closest(".add-to-cart-btn");
-    if(parentButton) {
-        const name = parentButton.getAttribute("data-name");
-        const price = parseFloat(parentButton.getAttribute("data-price"));
-
-        // ADD Carrinho
+    if (incrementButton) {
+        const name = incrementButton.getAttribute("data-name");
+        const price = parseFloat(incrementButton.getAttribute("data-price"));
         addToCart(name, price);
-    }
-})
-
-// Evento de clique para remover item do carrinho no modal
-cartItemsContainer.addEventListener('click', function(event) {
-    if (event.target.classList.contains('remove-btn')) {
-        const name = event.target.getAttribute('data-name');
+    } else if (decrementButton) {
+        const name = decrementButton.getAttribute("data-name");
         removeFromCart(name);
     }
+});
+
+// Evento de clique para adicionar/remover item no carrinho
+document.getElementById("cart-items").addEventListener("click", function(event) {
+    let incrementButton = event.target.closest(".increment-btn");
+    let decrementButton = event.target.closest(".decrement-btn");
+
+    if (incrementButton) {
+        const index = parseInt(incrementButton.getAttribute("data-index"));
+        incrementCartItem(index);
+    } else if (decrementButton) {
+        const index = parseInt(decrementButton.getAttribute("data-index"));
+        decrementCartItem(index);
+    }
+});
+
+// Evento de clique para abrir o modal do carrinho
+document.getElementById("cart-btn").addEventListener("click", function() {
+    document.getElementById("cart-modal").classList.remove("hidden");
+});
+
+// Evento de clique para fechar o modal do carrinho
+document.getElementById("closed-modal-btn").addEventListener("click", function() {
+    document.getElementById("cart-modal").classList.add("hidden");
 });
 
 // Removedor visível
@@ -644,19 +664,9 @@ function removeItemCart(name) {
         updateCartModal();
     }
 }
-
 // Evento de clique para ajustar a quantidade de complementos
 document.getElementById('complementos-section').addEventListener('click', function(event) {
     if (event.target.classList.contains('increment-acai-btn') || event.target.classList.contains('decrement-acai-btn')) {
         adjustComplementQuantity(event.target);
     }
-});
-
-// Evento para abrir/fechar o modal do carrinho
-document.getElementById('cart-btn').addEventListener('click', function() {
-    document.getElementById('cart-modal').classList.remove('hidden');
-});
-
-document.getElementById('closed-modal-btn').addEventListener('click', function() {
-    document.getElementById('cart-modal').classList.add('hidden');
 });

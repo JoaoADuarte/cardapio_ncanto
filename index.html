@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" 
-  rel="stylesheet">
-
-  <link rel="stylesheet" href="./styles/output.css" />
-  <title>N'Canto Mineiro</title>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/output.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>N'Canto Mineiro</title>
+  </head>
+  
 <body class="bg-gray-100">
-  <!-- HEADER -->
-  <header class="w-full h-[420px] bg-zinc-900 bg-home bg-cover bg-center">
-    <div class="w-full h-full flex flex-col justify-center items-center">
-      <img 
-        src="./assets/Logo N'Canto.png" 
-        alt="Logo N'Canto"
-        class="w-32 h-32 rounded-full shadow-lg hover:scale-110 duration-200"
-      />
-      <h1 class="text-4xl mt-4 mb-2 font-bold text-white">
-        N'Canto Mineiro
-      </h1>
-      <span class="text-1xl font-medium mb-5 text-white"> 
-        Rua: Joaquim Vicente Alves, Oficina NilCar.
-      </span>
+
+  <!-- Banner e logo -->
+  <header class="w-full h-[420px] relative overflow-hidden">
+    <div id="carousel" class="absolute inset-0 flex transition-transform duration-1000 ease-in-out">
+        <img src="./assets/açaí_banner.png" alt="açaí" class="w-full h-full object-cover">
+        <img src="./assets/Pastel_italiano (1).jpeg" alt="Pastel italiano" class="w-full h-full object-cover">
+        <img src="./assets/Minizinhas.jpg" alt="bolinhas" class="w-full h-full object-cover">
     </div>
-  </header>
+    <div class="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50">
+        <img 
+            src="./assets/Logo N'Canto.png" 
+            alt="Logo N'Canto"
+            class="w-32 h-32 rounded-full shadow-lg hover:scale-110 duration-200"
+        />
+        <h1 class="text-4xl mt-4 mb-2 font-bold text-white">
+            N'Canto Mineiro
+        </h1>
+        <span class="text-1xl font-medium mb-5 text-white"> 
+            Rua: Joaquim Vicente Alves, Oficina NilCar.
+        </span>
+    </div>
+</header>
 
   <!-- Horário de Funcionamento -->
   <div class="w-full h-full flex flex-col justify-center items-center mt-5">
@@ -38,41 +43,44 @@
   </div>
 
   <!-- Cardápio -->
-  <h2 class="text-2xl md:text-3xl font-bold text-center mt-9 mb-6"> 
-    Conheça nosso Cardápio
+  <h2 class="text-3xl md:text-3xl font-bold text-center mt-9 mb-6"> 
+    Conheça nosso Cardápio!
   </h2>
-  <p class="mb-4 text-center font-semibold">Obs: Entregas a partir de R$ 10,00.</p>
 
-  <!-- Abas -->
-  <div class="container mx-auto p-4">
-    <div class="flex space-x-4 mb-4">
-      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="salgados">
-        Salgados
-      </button>
-      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="paes">
-        Pães
-      </button>
-      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="festa">
-        Salgados p/ festa
-      </button>
-      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="bebidas">
-        Bebidas
-      </button>
-      <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-purple-500" data-target="acai-doces">
-        Açaí e Doces
-      </button>
-    </div>
+<!-- Abas -->
+<div class="container mx-auto max-w-7xl p-4">
+  <div id="tabs-container" class="flex mx-auto max-w-7xl justify-center space-x-4 bg-transparent py-2 z-50">
+    <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="salgados">
+      Salgados
+    </button>
+    <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="paes">
+      Pães
+    </button>
+    <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="festa">
+      Festas
+    </button>
+    <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-gray-500" data-target="bebidas">
+      Bebidas
+    </button>
+    <button class="tab-btn px-4 py-2 bg-red-500 text-white rounded hover:bg-purple-500" data-target="acai-doces">
+      Açaí e Doces
+    </button>
+  </div>
+</div>
+
 
     <!-- Seções do Cardápio -->
-     <div id="menu">
-        <section id="salgados" class="py-16">
-        <h2 class="text-2xl font-bold mb-8">Salgados</h2>
+    <div id="menu">
+        <section id="salgados" class="py-10">
+        <div class="mx-auto max-w-7xl px-10 mb-8 my-2">
+          <h2 class="font-bold text-3xl">Salgados</h2>
+        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-10">
 
-          <div class="flex gap-2 ">
+          <div class="flex gap-2 mb-10">
             <img
-              src="./assets/esfirra_carne.jpeg"
+              src="./assets/Esfirra_carne.png"
               alt="Esfirra de carne"
               class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
             />
@@ -83,14 +91,17 @@
                 <p class="font-bold text-lg">R$ 6,00</p>
                 
                 <button 
-                  class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-                  onclick="decreaseCount('item-esfirra-carne')">-</button>
-                <span id="item-esfirra-carne" class="text-xl font-bold">0</span>
-                <button 
-                  class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-                  onclick="increaseCount('item-esfirra-carne', this)" 
-                  data-name="esfirra de Carne" 
-                  data-price="6.00">+</button>
+                class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+                data-id="item-esfirra-carne"
+                data-name="Esfirra de Carne" 
+                data-price="6.00">-</button>
+              <span id="item-esfirra-carne" class="text-xl font-bold">0</span>
+              <button 
+                class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+                data-id="item-esfirra-carne"
+                data-name="Esfirra de Carne" 
+                data-price="6.00">+</button>
+                
               </div>
             </div>
           </div>
@@ -110,39 +121,15 @@
               <p class="font-bold text-lg">R$ 6,00</p>
               
               <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('queijo-presunto')">-</button>
-              <span id="queijo-presunto" class="text-xl font-bold">0</span>
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('queijo-presunto', this)"
-              data-name="queijo e presunto"
-              data-price="6.00">+</button>
-              
-              </div>
-          </div>
-        </div>
-
-        <div class="flex gap-2 mb-10">
-          <img
-              src="./assets/Esfirra_carne.png"
-              alt="Esfirra de carne"
-              class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
-          />
-          <div class="w-full">
-              <p class="font-bold">Esfirra de carne</p>
-              <p class="text-sm">Carne moída de boi.</p>
-              <div class="flex justify-items-end gap-3 mt-3">
-              <p class="font-bold text-lg">R$ 6,00</p>
-              
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('esfirra-carne')">-</button>
-              <span id="esfirra-carne" class="text-xl font-bold">0</span>
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('esfirra-carne')"
-              data-name="esfirra de carne"
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-queijo-presunto"
+              data-name="Queijo e presunto" 
+              data-price="6.00">-</button>
+            <span id="item-queijo-presunto" class="text-xl font-bold">0</span>
+            <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-queijo-presunto"
+              data-name="Queijo e presunto" 
               data-price="6.00">+</button>
               
               </div>
@@ -161,12 +148,16 @@
               <div class="flex justify-items-end gap-3 mt-3">
               <p class="font-bold text-lg">R$ 6,00</p>
               
-              <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('esfirra-frango')">-</button>
-              <span id="esfirra-frango" class="text-xl font-bold">0</span>
-              <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('esfirra-frango')"
-              data-name="esfirra de frango"
+              <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-esfirra-frango"
+              data-name="Esfirra de frango" 
+              data-price="6.00">-</button>
+            <span id="item-esfirra-frango" class="text-xl font-bold">0</span>
+            <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-esfirra-frango"
+              data-name="Esfirra de frango" 
               data-price="6.00">+</button>
               
               </div>
@@ -186,13 +177,15 @@
               <p class="font-bold text-lg">R$ 6,00</p>
               
               <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('Mini-pizza-calabresa')">-</button>
-              <span id="Mini-pizza-calabresa" class="text-xl font-bold">0</span>
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('Mini-pizza-calabresa')"
-              data-name="mini pizza calabresa"
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-mini-pizza-Calabresa"
+              data-name="Mini pizza de Calabresa" 
+              data-price="6.00">-</button>
+            <span id="item-mini-pizza-Calabresa" class="text-xl font-bold">0</span>
+            <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-mini-pizza-Calabresa"
+              data-name="Mini pizza de Calabresa" 
               data-price="6.00">+</button>
               
               </div>
@@ -212,13 +205,15 @@
               <p class="font-bold text-lg">R$ 6,00</p>
               
               <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('Mini-pizza-frango')">-</button>
-              <span id="Mini-pizza-frango" class="text-xl font-bold">0</span>
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('Mini-pizza-frango')"
-              data-name="mini pizza frango"
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-mini-pizza-frango"
+              data-name="Mini pizza de Frango" 
+              data-price="6.00">-</button>
+            <span id="item-mini-pizza-frango" class="text-xl font-bold">0</span>
+            <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-mini-pizza-frango"
+              data-name="Mini pizza de Frango" 
               data-price="6.00">+</button>
               
               </div>
@@ -227,7 +222,7 @@
 
         <div class="flex gap-2 mb-10">
           <img
-              src="./assets/Pastel_italiano.jpeg"
+              src="./assets/Pastel_italiano (1).jpeg"
               alt="Pastel Italiano"
               class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
           />
@@ -238,13 +233,15 @@
               <p class="font-bold text-lg">R$ 6,00</p>
               
               <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('pastel-Italiano')">-</button>
-              <span id="pastel-Italiano" class="text-xl font-bold">0</span>
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('pastel-Italiano')"
-              data-name="pastel Italiano"
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-pastel-italiano"
+              data-name="Pastel Italiano" 
+              data-price="6.00">-</button>
+            <span id="item-pastel-italiano" class="text-xl font-bold">0</span>
+            <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-pastel-italiano"
+              data-name="Pastel Italiano" 
               data-price="6.00">+</button>
               
               </div>
@@ -258,66 +255,77 @@
               class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
           />
           <div class="w-full">
-              <p class="font-bold">Empada frango</p>
+              <p class="font-bold">Empada de frango</p>
               <p class="text-sm">Frango.</p>
               <div class="flex justify-items-end gap-3 mt-3">
               <p class="font-bold text-lg">R$ 6,00</p>
               
               <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="decreaseCount('empada-frango')">-</button>
-              <span id="empada-frango" class="text-xl font-bold">0</span>
-              <button 
-              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-              onclick="increaseCount('empada-frango')"
-              data-name="empada frango"
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-empada-frango"
+              data-name="Empada de frango" 
+              data-price="6.00">-</button>
+            <span id="item-empada-frango" class="text-xl font-bold">0</span>
+            <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-empada-frango"
+              data-name="Empada de frango" 
               data-price="6.00">+</button>
               
               </div>
           </div>
         </div>
       </div>
-      </div>
+      
         </section>
 
-<hr class="max-w-7xl border-t-2 border-red-600 my-6 size-auto mx-auto">
-        
 <!------------------------------------------------Pães------------------------------------------------>
-      <section id="paes" class="py-16">
-      <div class="mx-auto max-w-7xl px-2 mb-8 my-2">
-        <h3 class="font-bold text-3xl">
-            Pães
-        </h3>
-    </div>
+<hr class="max-w-7xl border-t-2 border-red-600 my-6 size-auto mx-auto">
+      
+<section id="paes" class="px-16">
+  <div class="mx-auto max-w-7xl px-2 mb-8 my-2">
+    <h3 class="font-bold text-3xl">
+        Pães
+    </h3>
+  </div>
 
-    <!-- GRID Pães -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-10" id="menu">
-
-      <div class="flex gap-2 mb-10">
-        <img
-            src="./assets/Pão boi.jpg"
-            alt="Pão com Carne"
-            class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+  <!-- Nova GRID Pães -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-5" id="menu">
+    <div class="flex gap-2 mb-10">
+      
+      <button class="size-btn w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
+      <div class="flex-shrink-0">
+        <img 
+          src="./assets/Pão boi.jpg" 
+          alt="Pão com Carne"
+          class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
         />
-        <div class="w-full">
+      </div>
+      <div class="flex-grow">
+        <div class="flex flex-col justify-between">
+          <div>
             <p class="font-bold">Pão com Carne</p>
             <p class="text-sm">Carne de boi, cebola, tomate, pimentão, alface e molho.</p>
-            <div class="flex justify-items-end gap-3 mt-3">
+          </div>
+          <div class="flex justify-end">
             <p class="font-bold text-lg">R$ 11,00</p>
-            
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('pao-boi')">-</button>
-            <span id="pao-boi" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('pao-boi')"
-            data-name="pão c/ boi"
-            data-price="11.00">+</button>
-            
-            </div>
-        </div>
-      </div>
+          </div>
+        </button>
+    </div>
+  </div>
+  <div id="complemento-paes" class="">
+    <h3 class="tetx-lg font-bold mb-2">Adicionais</h3>
+    <div class="grid grid-cols-3 gap-4">
+      <label class="flex items-center gap-2"><input type="checkbox" class="complemento-pao" data-name="Mussarela" data-price="2.00">Mussarela - R$ 2,00</label>
+      <label class="flex items-center gap-2"><input type="checkbox" class="complemento-pao" data-name="Presunto" data-price="2.00">Presunto - R$ 2,00</label>
+      <label class="flex items-center gap-2"><input type="checkbox" class="complemento-pao" data-name="Ovo" data-price="2.00">Ovo - R$ 2,00</label>
+    </div>
+    <button class="bg-green-500 p-2 rounded mt-4 mb-5" onclick="addpaoToOrder()">Adicionar Pão</button>
+
+  </div>
+</section>
+    
+    
 
       <div class="flex gap-2 mb-10">
         <img
@@ -340,11 +348,9 @@
             onclick="increaseCount('pao-linguica')"
             data-name="Pão c/ Linguica"
             data-price="11.00">+</button>
-            
             </div>
         </div>
       </div>
-
       <div class="flex gap-2 mb-10">
         <img
             src="./assets/Pao porco.png"
@@ -364,7 +370,7 @@
             <button 
             class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
             onclick="increaseCount('pao-porco')"
-            data-name="Pão c/ Linguica"
+            data-name="Pão carne de Porco"
             data-price="11.00">+</button>
             
             </div>
@@ -432,8 +438,8 @@
     </div>
 
 <!------------------------------------------------Festa------------------------------------------------>
-    <section id="festa" class="py-16">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-10" id="menu">
+    <section id="festa" class="py-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2" id="menu">
         <div class="flex gap-2 w-full">
             <img 
                 src="./assets/Minizinhas.jpg"
@@ -442,7 +448,7 @@
             />
 
             <div class="w-full">
-                <p class="font-bold text-lg">Sabores dos minis:</p>
+                <p class="font-bold text-lg">Minis salgados:</p>
                 <p>Pizza, frango, carne, empada e pastel italiano.</p>
                 <p class="text-sm text-red-800">Obs: Encomendar com pelo menos 1 dia de antecedência.</p>
                 <div class="flex items-center gap-2 justify-between mt-1">
@@ -459,15 +465,15 @@
     </div>
     </section>
 
-<!------------------------------------------------Festa------------------------------------------------>
-     <section id="bebidas" class="px-16">
-      <div class="mx-auto max-w-7xl px-2 mb-8 my-2">
+<!------------------------------------------------Bebidas------------------------------------------------>
+     <section id="bebidas" class="py-5">
+      <div class="mx-auto max-w-7xl px-10 mb-8 my-2">
         <h3 class="font-bold text-3xl">
             Bebidas
         </h3>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-10" id="menu">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-7 md:gap-10 mx-auto max-w-7xl px-2" id="menu">
 
       <div class="flex gap-2 mb-10">
         <img
@@ -481,14 +487,16 @@
             <p class="font-bold text-lg">R$ 5,50</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('coca-lata')">-</button>
-            <span id="coca-lata" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('coca-lata')"
-            data-name="coca-lata"
-            data-price="5.50">+</button>
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-coca-lata"
+            data-name="Coca lata" 
+            data-price="6.00">-</button>
+           <span id="item-coca-lata" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-coca-lata"
+            data-name="Coca lata" 
+            data-price="6.00">+</button>
             
             </div>
         </div>
@@ -506,15 +514,16 @@
             <p class="font-bold text-lg">R$ 5,50</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('guarana-lata')">-</button>
-            <span id="guarana-lata" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('guarana-lata')"
-            data-name="guarana-lata"
-            data-price="5.50">+</button>
-            
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-guaraná-lata"
+            data-name="Guaraná lata" 
+            data-price="6.00">-</button>
+           <span id="item-guaraná-lata" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-guaraná-lata"
+            data-name="Guaraná lata" 
+            data-price="6.00">+</button>
             </div>
         </div>
       </div>
@@ -531,14 +540,16 @@
             <p class="font-bold text-lg">R$ 5,50</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('sukita')">-</button>
-            <span id="sukita" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('sukita')"
-            data-name="sukita"
-            data-price="5.50">+</button>
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-sukita"
+            data-name="Sukita" 
+            data-price="6.00">-</button>
+           <span id="item-sukita" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-sukita"
+            data-name="Sukita" 
+            data-price="6.00">+</button>
             
             </div>
         </div>
@@ -556,14 +567,16 @@
             <p class="font-bold text-lg">R$ 15,00</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('coca-2l')">-</button>
-            <span id="coca-2l" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('coca-2l')"
-            data-name="coca-2l"
-            data-price="15.00">+</button>
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-coca-cola-2L"
+            data-name="Coca-cola 2L" 
+            data-price="6.00">-</button>
+           <span id="item-coca-cola-2L" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-coca-cola-2L"
+            data-name="Coca-cola 2L" 
+            data-price="6.00">+</button>
             
             </div>
         </div>
@@ -581,14 +594,16 @@
             <p class="font-bold text-lg">R$ 15,00</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('guarana-2l')">-</button>
-            <span id="guarana-2l" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('guarana-2l')"
-            data-name="guarana-2l"
-            data-price="13.00">+</button>
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-guaraná-2L"
+            data-name="Guaraná 2L" 
+            data-price="6.00">-</button>
+           <span id="item-guaraná-2L" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-guaraná-2L"
+            data-name="Guaraná 2L" 
+            data-price="6.00">+</button>
             
             </div>
         </div>
@@ -601,18 +616,20 @@
             class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
         />
         <div class="w-full">
-            <p class="font-bold">Suco Maracuja</p>
+            <p class="font-bold">Suco de Maracuja</p>
             <div class="flex justify-items-end gap-3 mt-3">
             <p class="font-bold text-lg">R$ 6,00</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('suco-maracuja')">-</button>
-            <span id="suco-maracuja" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('suco-maracuja')"
-            data-name="suco-maracuja"
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-suco-maracuja"
+            data-name="Suco de Maracujá" 
+            data-price="6.00">-</button>
+           <span id="item-suco-maracuja" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-suco-maracuja"
+            data-name="Suco de Maracujá" 
             data-price="6.00">+</button>
             
             </div>
@@ -626,43 +643,47 @@
             class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
         />
         <div class="w-full">
-            <p class="font-bold">Suco Graviola</p>
+            <p class="font-bold">Suco de Graviola</p>
             <div class="flex justify-items-end gap-3 mt-3">
             <p class="font-bold text-lg">R$ 6,00</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('suco-graviola')">-</button>
-            <span id="suco-graviola" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('suco-graviola')"
-            data-name="suco-graviola"
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-suco-graviola"
+            data-name="Suco de Graviola" 
+            data-price="6.00">-</button>
+           <span id="item-suco-graviola" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-suco-graviola"
+            data-name="Suco de Graviola" 
             data-price="6.00">+</button>
             
             </div>
         </div>
       </div>
 
-      <div class="flex gap-2 mb-10">
+      <div class="flex gap-2">
         <img
             src="./assets/Suco morango.png"
             alt="Suco Morango"
             class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
         />
         <div class="w-full">
-            <p class="font-bold">Suco Morango</p>
+            <p class="font-bold">Suco de Morango</p>
             <div class="flex justify-items-end gap-3 mt-3">
             <p class="font-bold text-lg">R$ 6,00</p>
             
             <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="decreaseCount('suco-morango')">-</button>
-            <span id="suco-morango" class="text-xl font-bold">0</span>
-            <button 
-            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500" 
-            onclick="increaseCount('suco-morango')"
-            data-name="suco-morango"
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-suco-morango"
+            data-name="Suco de Morango" 
+            data-price="6.00">-</button>
+           <span id="item-suco-morango" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-suco-morango"
+            data-name="Suco de Morango" 
             data-price="6.00">+</button>
             
             </div>
@@ -670,66 +691,72 @@
       </div>
       </div>
      </section>
+<!------------------------------------------------Açaí------------------------------------------------>
+<div id="acai-doces" class="p-4">
+  <h3 class="text-2xl font-bold text-purple-800 mb-4">
+      Monte seu açaí
+  </h3>
+  
+  <button class="size-btn bg-gray-300 p-2 rounded hover:bg-purple-600" data-size="300ml" data-price="10.00" onclick="togglePressed(this)">300ml - R$ 10,00</button>
+  <button class="size-btn bg-gray-300 p-2 rounded hover:bg-purple-600" data-size="500ml" data-price="15.00" onclick="togglePressed(this)">500ml - R$ 15,00</button>
+  <button class="size-btn bg-gray-300 p-2 rounded hover:bg-purple-600" data-size="700ml" data-price="20.00" onclick="togglePressed(this)">700ml - R$ 20,00</button>
+</div>
 
-     <div id="acai-doces" class="p-4">
-      <h3 class="text-2xl font-bold text-purple-800 mb-4">
-        Monte seu açaí
-      </h3>
-      <button class="size-btn bg-gray-300 p-2 rounded hover:bg-purple-600" data-size="300ml" data-price="10.00">300ml - R$ 10,00</button>
-      <button class="size-btn bg-gray-300 p-2 rounded hover:bg-purple-600" data-size="500ml" data-price="15.00">500ml - R$ 15,00</button>
-      <button class="size-btn bg-gray-300 p-2 rounded hover:bg-purple-600" data-size="700ml" data-price="20.00">700ml - R$ 20,00</button>
-     </div>
+<div id="complementos-section" class="hidden">
+  <h3 class="text-lg font-bold px-2 mb-2"> Escolha seu complemento:</h3>
+  <div class="grid grid-cols-2 gap-4">
+    
+    <div class="flex items-center gap-2 p-2">
+      Granola - R$ 2,00
+      <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-acai-btn" data-id="item-granola" data-name="Granola" data-price="2.00">-</button>
+      <span id="item-granola" class="text-base font-bold">0</span>
+      <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-acai-btn" data-id="item-granola" data-name="Granola" data-price="2.00">+</button>
+    </div>
 
-     <div id="complementos-section" class="hidden">
-      <h3 class="text-lg font-bold mb-2"> Escolha seu complemento:</h3>
-      <div class="grid grid-cols-2  gap-4">
-        <label><input type="checkbox" class="complemento" data-name="Granola" data-price="2.00">Granola - R$ 2,00</label>
-        <label><input type="checkbox" class="complemento" data-name="Paçoca" data-price="2.00">Paçoca - R$ 2,00</label>
-        <label><input type="checkbox" class="complemento" data-name="Leite-Condensado" data-price="3.50">Leite Condensado - R$ 3,50</label>
-        <label><input type="checkbox" class="complemento" data-name="Banana" data-price="2.00">Banana - R$ 2,00</label>
-        <label><input type="checkbox" class="complemento" data-name="Morango" data-price="2.00">Morango - R$ 2,00</label>
-        <label><input type="checkbox" class="complemento" data-name="Calda-Morango" data-price="2.00">Calda de Morango - R$ 2,00</label>
-        <label><input type="checkbox" class="complemento" data-name="Calda-Chocolate" data-price="2.00">Calda de Chocolate - R$ 2,00</label>
-      </div>
-      <button class="bg-green-500 p-2 rounded mt-4" onclick="addacaiToOrder()">Adicionar Açaí</button>
-
-     </div>
-     </div>
   </div>
 
+  <button class="text-base font-bold bg-green-500 hover:bg-purple-600 hover:scale-110 hover:rotate-2 p-2 rounded ml-4 mb-2" onclick="addacaiToOrder()">Adicionar Açaí</button>
+</div>
+
+
+
+     </div>
+     </div>
+    </div>
+
+
   <!------------------------------------------------CARRINHO------------------------------------------------->
-    <div 
-    class="bg-black/60 w-full h-full fixed top-0 left-0 z-[99] items-center justify-center hidden"
-    id="cart-modal"
-    > <!--Fundo na parte de confirmação dos itens-->
-    <div class="bg-white p-5 rounded-md min-w-[90%] md:min-w-[600px]">
-        <h2 class="text-center font-bold text-2xl mb-2">Meu Carrinho</h2>
+  <div 
+  class="bg-black/60 w-full h-full fixed top-0 left-0 z-[99] items-center justify-center hidden"
+  id="cart-modal"
+> <!--Fundo na parte de confirmação dos itens-->
+  <div class="bg-white p-5 rounded-md w-full max-w-3xl h-[90vh] flex flex-col">
+      <h2 class="text-center font-bold text-2xl mb-2">Meu Carrinho</h2>
 
-        <!-- Container para os itens do carrinho com rolagem -->
-        <div id="cart-items" class="flex justify-between mb-2 flex-col overflow-y-auto" style="max-height: 400px;"></div>
+      <!-- Container para os itens do carrinho com rolagem -->
+      <div id="cart-items" class="flex-grow overflow-y-auto mb-2"></div>
 
-        <p class="font-bold">Total: <span id="cart-total">0.00</span> </p>
-        
-        <p class="font-bold mt-4">Endereço de entrega:</p>
-        <input 
-            type="text"
-            placeholder="Digite seu endereço completo"
-            id="address"
-            class="w-full border-2 p-1 rounded my-1"
-        />
+      <p class="font-bold">Taxa de entrega: R$ 2,00</p>
+      <p class="font-bold">Total: <span id="cart-total">0.00</span> </p>
+      
+      <p class="font-bold mt-4">Endereço de entrega:</p>
+      <input 
+          type="text"
+          placeholder="Digite seu endereço completo"
+          id="address"
+          class="w-full border-2 p-1 rounded my-1"
+      />
 
-        <p class="text-red-500 hidden" id="address-warn">Digite seu endereço completo!</p>
+      <p class="text-red-500 hidden" id="address-warn">Digite seu endereço completo!</p>
 
-        <!-- Dropdown para escolher a forma de pagamento -->
-        <label for="Pagamento" class="font-bold mt-2">Forma de Pagamento:</label>
-        <select name="Pagamento" id="Pagamento" onchange="verificarOpcao()" class="border-2 rounded-full">
-
-            <option value="_blank"></option>
-            <option value="Credito">Crédito</option>
-            <option value="Debito">Débito</option>
-            <option value="Pix">Pix</option>
-            <option value="Dinheiro">Dinheiro</option>
-        </select>
+      <!-- Dropdown para escolher a forma de pagamento -->
+      <label for="Pagamento" class="font-bold mt-2">Forma de Pagamento:</label>
+      <select name="Pagamento" id="Pagamento" onchange="verificarOpcao()" class="border-2 rounded-full mb-4">
+          <option value="_blank"></option>
+          <option value="Credito">Crédito</option>
+          <option value="Debito">Débito</option>
+          <option value="Dinheiro">Dinheiro</option>
+      </select>
 
         <p class="text-red-500 hidden" id="payment-warn">Selecione método de pagamento.</p>
 
@@ -752,12 +779,9 @@
             id="Obs"
             class="w-full border-2 p-1 rounded my-1"
         >
-
-        
-
         <div class="flex items-center justify-between mt-5 w-full">
-            <button id="closed-modal-btn" class="bg-red-500 text-white px-4 py-1 rounded">Fechar</button>
-            <button id="checkout-btn" class="bg-green-500 text-white px-4 py-1 rounded">Finalizar pedido</button>
+          <button id="closed-modal-btn" class="bg-red-500 text-white hover:scale-105 px-4 py-1 rounded">Fechar</button>
+          <button id="checkout-btn" class="bg-green-500 text-white hover:scale-105 px-4 py-1 rounded">Finalizar pedido</button>
         </div>
     </div>
     </div>
@@ -792,23 +816,16 @@
     }
     </script>
 
-    <!-- FIM CARRINHO -->
-
-
-    <!------------------------------------------------BUTTON CARD FOOTER------------------------------------------------>
-    <footer class="w-full bg-red-500 py-3 fixed bottom-0 z-40 flex items-center justify-center hidden">
-        <button 
-            class="flex items-center gap-2 text-white"
-            id="cart-btn"
-        >
-            (<span id="cart-count">0</span>)
-            Ver Carrinho
-            <i class="fa fa-cart-plus text-lg text-white"></i>
-        </button>
-    </footer>
-
-  <!--FIM BUTTON CARD FOOTER-->
-
+<!------------------------------------------------BUTTON CARD FOOTER------------------------------------------------>
+<footer class="fixed bottom-4 right-4 w-12 h-12 rounded-full bg-red-600 text-white text-lg hover:bg-green-700 flex items-center justify-center">
+  <button 
+      class="relative flex items-center justify-center text-white w-full h-full"
+      id="cart-btn"
+  >
+      <i class="fa fa-cart-plus text-lg"></i>
+      <span id="cart-count" class="absolute top-0 right-0 bg-white text-red-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">0</span>
+  </button>
+</footer>
 <script src="script.js"></script>
 </body>
 </html>
