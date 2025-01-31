@@ -18,155 +18,161 @@ const paymentwarn = document.getElementById("payment-warn");
 
 let total = 0; // Variável global para o total
 let trocoMessage = ""; // Variável global para a mensagem de troco
- // Armazena todos os itens do carrinho
+let cartItems = [];
 let selectedSize = null; // Armazena o tamanho do açaí selecionado
 let selectedComplements = {}; // Armazena os complementos selecionados
 
-
-function renderCartItem(item, index) {
-    const cartItemElement = document.createElement("div");
-    cartItemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
-
-    let itemTotal = item.price * item.quantity;
-    cartItemElement.innerHTML = `
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="font-bold">${item.name}</p>
-                <p>Quantidade: <button class="decrement-btn" data-id="${index}" data-name="${item.name}">-</button> ${item.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
-                <p class="font-medium mt-2">R$ ${(item.price * item.quantity).toFixed(2)}</p>
-            </div>
-        </div>
-    `;
-
-    if (item.type === "acai" && item.complements && item.complements.length > 0) {
-        cartItemElement.innerHTML += `<p class="mt-2 font-bold">Complementos:</p>`;
-        item.complements.forEach(complement => {
-            cartItemElement.innerHTML += `
-                <p>${complement.name} <button class="decrement-btn">-</button> ${complement.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
-            `;
-            itemTotal += complement.price * complement.quantity;
-        });
-    }
-
-    const removeButton = document.createElement("button");
-    removeButton.textContent = "Remover";
-    removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
-    removeButton.addEventListener("click", () => removeFromCart(item.name));
-    cartItemElement.appendChild(removeButton);
-    return { element: cartItemElement, total: itemTotal };
-}
 
 function updateCartModal() {
     const cartItemsContainer = document.getElementById("cart-items");
     const cartTotal = document.getElementById("cart-total");
     const cartCounter = document.getElementById("cart-count");
-    let total = 0;
 
+    // Limpa o conteúdo atual do carrinho
     cartItemsContainer.innerHTML = "";
+
+    let total = 0; // Reinicia o total dos itens
+
+    // Itera sobre os itens do carrinho e os exibe
     cartItems.forEach((item, index) => {
-        const { element, total: itemTotal } = renderCartItem(item, index);
+        const cartItemElement = document.createElement("div");
+        cartItemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
+
+        // Exibe o nome, preço e quantidade do item
+        cartItemElement.innerHTML = `
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="font-bold">${item.name}</p>
+                    <p>Quantidade: <button class="decrement-btn" data-id="${index}" data-name="${item.name}">-</button> ${item.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
+                    <p class="font-medium mt-2">R$ ${(item.price * item.quantity).toFixed(2)}</p>
+                </div>
+            </div>
+        `;
+
+        let itemTotal = item.price * item.quantity;
+
+        // Se for um açaí, exibe os complementos e adiciona seus valores ao total
+        if (item.type === "acai" && item.complements && item.complements.length > 0) {
+            cartItemElement.innerHTML += `<p class="mt-2 font-bold">Complementos:</p>`;
+            item.complements.forEach(complement => {
+                cartItemElement.innerHTML += `
+                    <p>${complement.name} - Quantidade: ${complement.quantity}</p>
+                `;
+                // Adiciona o valor dos complementos ao total
+                itemTotal += complement.price * complement.quantity;
+            });
+        }
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remover";
+        removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
+        removeButton.addEventListener("click", () => removeFromCart(item.name));
+        cartItemElement.appendChild(removeButton);
+
+        // Adiciona o valor do item principal ao total
         total += itemTotal;
-        cartItemsContainer.appendChild(element);
+
+        cartItemsContainer.appendChild(cartItemElement);
     });
 
-    const deliveryFee = 2.00;
-    const totalWithFee = total + deliveryFee;
-    cartTotal.textContent = totalWithFee.toLocaleString("pt-br", {
+    // Atualiza o total e o contador do carrinho
+    cartTotal.textContent = total.toLocaleString("pt-br", {
         style: "currency",
         currency: "BRL"
     });
     cartCounter.textContent = cartItems.length;
 
+    // Exibe mensagem se o carrinho estiver vazio
     if (cartItems.length === 0) {
         cartItemsContainer.innerHTML = "<p class='text-center'>Seu carrinho está vazio.</p>";
-        cartTotal.textContent = deliveryFee.toLocaleString("pt-br", {
-            style: "currency",
-            currency: "BRL"
-        });
+        cartTotal.textContent = "R$ 0,00"; // Exibe zero quando o carrinho está vazio
     }
 }
 
-function updateMenuCounter() {
-    const cartCount = document.getElementById("cart-count");
-    const menuCount = document.getElementById("menu-count"); // Supondo que você tenha um elemento com id "menu-count" no menu
-    let itemCount = 0;
-
-    cartItems.forEach(item => {
-        itemCount += item.quantity;
-    });
-
-    cartCount.textContent = itemCount;
-    if (menuCount) {
-        menuCount.textContent = itemCount;
+// Função para adicionar item ao carrinho
+function addToCart(name, price) {
+    const existingItem = cartItems.find(item => item.name === name);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        const newItem = {
+            name: name,
+            price: price,
+            quantity: 1
+        };
+        cartItems.push(newItem);
     }
+    updateMenuQuantity(name, existingItem ? existingItem.quantity + 1 : 1); // Atualiza a quantidade no menu principal
+    updateCartModal(); // Atualiza a interface do carrinho
 }
 
-
-  
- // Função para atualizar a quantidade no menu principal
- function updateMenuQuantity(name, quantity) {
-    const quantityElement = document.querySelector(`[data-name="${name}"] + .text-xl.font-bold`);
-    if (quantityElement) {
-        quantityElement.textContent = quantity;
-    }
-}
-// Função para remover item do carrinho e atualizar o menu principal
+// Função para remover item do carrinho
 function removeFromCart(name) {
     const itemIndex = cartItems.findIndex(item => item.name === name);
     if (itemIndex !== -1) {
         const item = cartItems[itemIndex];
         if (item.quantity > 1) {
-            item.quantity -= 1;
+            item.quantity -= 1; // Diminui a quantidade no carrinho
         } else {
-            cartItems.splice(itemIndex, 1);
+            cartItems.splice(itemIndex, 1); // Remove o item se a quantidade for 1
         }
-        updateCartUI();
-        updateMenuQuantity(name, cartItems.find(item => item.name === name)?.quantity || 0);
+
+        // Atualiza a quantidade no menu principal
+        updateMenuQuantity(name, item.quantity);
+
+        updateCartModal(); // Atualiza o modal do carrinho
+        console.log(`Item removido: ${name}`);
     }
 }
 
-
-
-  // Evento de clique para adicionar item ao carrinho
-  menu.addEventListener("click", function(event) {
-    let addToCartButton = event.target.closest(".add-to-cart-btn"); // Ajustar a classe do botão
-    if (addToCartButton) {
-      const name = addToCartButton.getAttribute("data-name");
-      const price = parseFloat(addToCartButton.getAttribute("data-price"));
-      addToCart(name, price);
+// Função para atualizar a quantidade no menu principal
+function updateMenuQuantity(name, quantity) {
+    const menuItem = document.querySelector(`.menu-item[data-name="${name}"]`);
+    if (menuItem) {
+        const quantityElement = menuItem.querySelector(".item-quantity");
+        if (quantityElement) {
+            quantityElement.textContent = quantity;
+        }
     }
-  });
+}
 
 // Função para aumentar a quantidade
-function incrementCartItem(index) {
-    console.log("Incrementando item com índice:", index); // Log para depuração
-    if (index >= 0 && index < cartItems.length) {
-        cartItems[index].quantity += 1;
-        console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
-        updateCartUI();
-        updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
+function increaseCount(id, button) {
+    console.log(`Aumentando quantidade no button: ${id}`);
+    const countElement = document.getElementById(id);
+    if (countElement) {
+        let currentCount = parseInt(countElement.textContent);
+        countElement.textContent = currentCount + 1;
     }
+
+    // Captura os dados do botão +
+    const itemName = button.getAttribute("data-name");
+    const itemPrice = parseFloat(button.getAttribute("data-price"));
+
+    console.log(`Dados capturados - Nome: ${itemName}, Preço: ${itemPrice}`);
+    addToCart(itemName, itemPrice);
 }
 
-function decrementCartItem(index) {
-    console.log("Decrementando item com índice:", index); // Log para depuração
-    if (index >= 0 && index < cartItems.length) {
-        if (cartItems[index].quantity > 1) {
-            cartItems[index].quantity -= 1;
-            console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
-            updateCartUI();
-            updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
-        } else {
-            removeFromCart(cartItems[index].name);
+// Função para diminuir a quantidade
+function decreaseCount(id, button) {
+    console.log(`Diminuindo quantidade: ${id}`);
+    const countElement = document.getElementById(id);
+    if (countElement) {
+        let currentCount = parseInt(countElement.textContent);
+        if (currentCount > 0) {
+            countElement.textContent = currentCount - 1;
         }
     }
+
+    // Captura os dados do botão -
+    const itemName = button.getAttribute("data-name");
+    removeFromCart(itemName); // Remove o item do carrinho
 }
 
-// Evento de clique para os botões de incremento e decremento
+// Evento de clique para os botões de incremento e decremento no menu
 menu.addEventListener('click', function(event) {
     let incrementButton = event.target.closest(".increment-btn");
     let decrementButton = event.target.closest(".decrement-btn");
-
 
     if (incrementButton) {
         const id = incrementButton.getAttribute("data-id");
@@ -181,6 +187,23 @@ menu.addEventListener('click', function(event) {
     }
 });
 
+// Evento de clique para os botões de incremento e decremento no carrinho
+cartItemsContainer.addEventListener('click', function(event) {
+    let incrementButton = event.target.closest(".increment-btn");
+    let decrementButton = event.target.closest(".decrement-btn");
+
+    if (incrementButton) {
+        const id = incrementButton.getAttribute("data-id");
+        console.log(`Increment button clicked in cart - ID: ${id}`);
+        increaseCount(id, incrementButton);
+    }
+
+    if (decrementButton) {
+        const id = decrementButton.getAttribute("data-id");
+        console.log(`Decrement button clicked in cart - ID: ${id}`);
+        decreaseCount(id, decrementButton);
+    }
+});
 // Função para calcular o troco
 function calcularTroco() {
     const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
@@ -503,24 +526,38 @@ function addacaiToOrder() {
     alert('Açaí adicionado ao carrinho!');
 }
 
-// Função para remover um item do carrinho
-let cartItems = []; // Armazena todos os itens do carrinho
+function updateCartUI() {
+    const cartItemsContainer = document.getElementById("cart-items");
+    const cartCount = document.getElementById("cart-count");
+    const cartTotal = document.getElementById("cart-total");
+    // Limpa o conteúdo atual do carrinho
+    cartItemsContainer.innerHTML = "";
+    let total = 0;
+    let itemCount = 0;
 
-// Função para adicionar item ao carrinho
-function addToCart(name, price) {
-    let itemIndex = cartItems.findIndex(item => item.name === name);
-    if (itemIndex !== -1) {
-        cartItems[itemIndex].quantity += 1;
-    } else {
-        const newItem = {
-            name: name,
-            price: price,
-            quantity: 1
-        };
-        cartItems.push(newItem);
-    }
-    updateCartUI();
-    updateMenuQuantity(name, cartItems.find(item => item.name === name)?.quantity || 0);
+    // Itera sobre os itens do carrinho e os exibe
+    cartItems.forEach((item, index) => {
+        const { element, total: itemTotal } = renderCartItem(item, index);
+        cartItemsContainer.appendChild(element);
+        total += itemTotal;
+        itemCount += item.quantity;
+    });
+
+    // Atualiza o total e o contador do carrinho
+    cartTotal.textContent = 'R$ ' + total.toFixed(2);
+    cartCount.textContent = itemCount;
+
+    // Adiciona eventos de clique para os botões de incremento e decremento
+    const incrementBtns = cartItemsContainer.querySelectorAll('.increment-btn');
+    const decrementBtns = cartItemsContainer.querySelectorAll('.decrement-btn');
+
+    incrementBtns.forEach(btn => {
+        btn.addEventListener('click', () => incrementCartItem(parseInt(btn.getAttribute('data-index'))));
+    });
+
+    decrementBtns.forEach(btn => {
+        btn.addEventListener('click', () => decrementCartItem(parseInt(btn.getAttribute('data-index'))));
+    });
 }
 
 // Função para remover item do carrinho
@@ -557,59 +594,7 @@ function decrementCartItem(index) {
 }
 
 
-// Função para atualizar a interface do carrinho
-function updateCartUI() {
-    const cartItemsContainer = document.getElementById("cart-items");
-    const cartCount = document.getElementById("cart-count");
-    const cartTotal = document.getElementById("cart-total");
-    // Limpa o conteúdo atual do carrinho
-    cartItemsContainer.innerHTML = "";
-    let total = 0;
-    let itemCount = 0;
 
-    // Itera sobre os itens do carrinho e os exibe
-    cartItems.forEach((item, index) => {
-        const itemElement = document.createElement("div");
-        itemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
-
-        // Exibe o nome, preço e quantidade do item
-        itemElement.innerHTML = `
-            <p class="font-bold">${item.name} - R$ ${item.price.toFixed(2)}</p>
-            <p>Quantidade: 
-                <button class="decrement-btn" data-index="${index}">-</button> 
-                ${item.quantity} 
-                <button class="increment-btn" data-index="${index}">+</button>
-            </p>
-        `;
-
-        // Botão para remover o item do carrinho
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remover";
-        removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
-        removeButton.addEventListener("click", () => removeItemFromCart(index));
-        itemElement.appendChild(removeButton);
-
-        cartItemsContainer.appendChild(itemElement);
-
-        // Adiciona eventos de clique para os botões de incremento e decremento
-        const incrementBtn = itemElement.querySelector('.increment-btn');
-        const decrementBtn = itemElement.querySelector('.decrement-btn');
-
-        incrementBtn.addEventListener('click', () => incrementCartItem(index));
-        decrementBtn.addEventListener('click', () => decrementCartItem(index));
-
-        // Atualiza o total e a contagem de itens
-        total += item.price * item.quantity;
-        itemCount += item.quantity;
-    });
-
-    // Atualiza o total e o contador do carrinho
-    cartTotal.textContent = 'R$ ' + total.toFixed(2);
-    cartCount.textContent = itemCount;
-}
-
-
-// Evento de clique para adicionar item ao carrinho
 // Evento de clique para adicionar/remover item no menu
 document.getElementById("menu").addEventListener("click", function(event) {
     let incrementButton = event.target.closest(".increment-btn");
