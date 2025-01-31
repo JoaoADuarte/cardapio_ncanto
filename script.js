@@ -535,13 +535,6 @@ function updateCartUI() {
     let total = 0;
     let itemCount = 0;
 
-    // Itera sobre os itens do carrinho e os exibe
-    cartItems.forEach((item, index) => {
-        const { element, total: itemTotal } = renderCartItem(item, index);
-        cartItemsContainer.appendChild(element);
-        total += itemTotal;
-        itemCount += item.quantity;
-    });
 
     // Atualiza o total e o contador do carrinho
     cartTotal.textContent = 'R$ ' + total.toFixed(2);
