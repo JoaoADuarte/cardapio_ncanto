@@ -4,26 +4,15 @@
 
 /* Background da tela */
 body{
+    
     background-color: #f6f7f8;
-    #cart-modal {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: fixed;
+    #carousel img {
+        position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        z-index: 9999;
-        display: none; /* Inicialmente oculto */
-    }
-    
-    #cart-modal .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 8px;
-        max-width: 800px;
-        width: 90%; /* Ajuste conforme necessário */
+        object-fit: cover;
+        transition: transform 1s ease-in-out;
     }
 }

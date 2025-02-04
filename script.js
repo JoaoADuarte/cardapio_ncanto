@@ -1,402 +1,30 @@
-const menu = document.getElementById("menu");
-const cartModal = document.getElementById("cart-modal");
-const cartBtn = document.getElementById("cart-btn");
-const cartItemsContainer = document.getElementById('cart-items');
-const cartTotal = document.getElementById('cart-total');
-const closedMdalBtn = document.getElementById("closed-modal-btn");
-const checkoutBtn = document.getElementById("checkout-btn");
-const cartCounter = document.getElementById("cart-count");
-const addressInput = document.getElementById("address");
-const addressWarn = document.getElementById("address-warn");
-const trocoInput = document.getElementById("troco");
-const trocoWarn = document.getElementById("troco-warn");
-const obsInput = document.getElementById("Obs");
-const paymentMethodSelect = document.getElementById("Pagamento"); // dropdown do pagamento
-const valueCamp = document.getElementById("campoValor");
-const valueInput = document.getElementById("valor");
-const paymentwarn = document.getElementById("payment-warn");
+const menu = document.getElementById("menu")
+const cartBtn = document.getElementById("cart-btn")
+const cartItemsContainer = document.getElementById("cart-items")
+const cartTotal = document.getElementById("cart-total")
+const closedMdalBtn = document.getElementById("closed-modal-btn")
+const checkoutBtn = document.getElementById("checkout-btn")
+const cartCounter = document.getElementById("cart-count")
+const addressInput = document.getElementById("address")
+const addressWarn = document.getElementById("address-warn")
+const trocoInput = document.getElementById("troco")
+const trocoWarn = document.getElementById("troco-warn")
+const obsInput = document.getElementById("Obs")
+const paymentMethodSelect = document.getElementById("Pagamento") // dropdown do pagamento
+const valueCamp = document.getElementById("campoValor")
+const valueInput = document.getElementById("valor")
+const paymentwarn = document.getElementById("payment-warn")
+
 
 let total = 0; // Variável global para o total
 let trocoMessage = ""; // Variável global para a mensagem de troco
-let cartItems = [];
+
 let selectedSize = null; // Armazena o tamanho do açaí selecionado
 let selectedComplements = {}; // Armazena os complementos selecionados
 
-
-function updateCartModal() {
-    const cartItemsContainer = document.getElementById("cart-items");
-    const cartTotal = document.getElementById("cart-total");
-    const cartCounter = document.getElementById("cart-count");
-
-    // Limpa o conteúdo atual do carrinho
-    cartItemsContainer.innerHTML = "";
-
-    let total = 0; // Reinicia o total dos itens
-
-    // Itera sobre os itens do carrinho e os exibe
-    cartItems.forEach((item, index) => {
-        const cartItemElement = document.createElement("div");
-        cartItemElement.classList.add("cart-item", "mb-4", "p-4", "border", "rounded");
-
-        // Exibe o nome, preço e quantidade do item
-        cartItemElement.innerHTML = `
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="font-bold">${item.name}</p>
-                    <p>Quantidade: <button class="decrement-btn" data-id="${index}" data-name="${item.name}">-</button> ${item.quantity} <button class="increment-btn" data-id="${index}" data-name="${item.name}">+</button></p>
-                    <p class="font-medium mt-2">R$ ${(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-            </div>
-        `;
-
-        let itemTotal = item.price * item.quantity;
-
-        // Se for um açaí, exibe os complementos e adiciona seus valores ao total
-        if (item.type === "acai" && item.complements && item.complements.length > 0) {
-            cartItemElement.innerHTML += `<p class="mt-2 font-bold">Complementos:</p>`;
-            item.complements.forEach(complement => {
-                cartItemElement.innerHTML += `
-                    <p>${complement.name} - Quantidade: ${complement.quantity}</p>
-                `;
-                // Adiciona o valor dos complementos ao total
-                itemTotal += complement.price * complement.quantity;
-            });
-        }
-
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Remover";
-        removeButton.classList.add("bg-red-500", "text-white", "px-2", "py-1", "rounded", "mt-2");
-        removeButton.addEventListener("click", () => removeFromCart(item.name));
-        cartItemElement.appendChild(removeButton);
-
-        // Adiciona o valor do item principal ao total
-        total += itemTotal;
-
-        cartItemsContainer.appendChild(cartItemElement);
-    });
-
-    // Atualiza o total e o contador do carrinho
-    cartTotal.textContent = total.toLocaleString("pt-br", {
-        style: "currency",
-        currency: "BRL"
-    });
-    cartCounter.textContent = cartItems.length;
-
-    // Exibe mensagem se o carrinho estiver vazio
-    if (cartItems.length === 0) {
-        cartItemsContainer.innerHTML = "<p class='text-center'>Seu carrinho está vazio.</p>";
-        cartTotal.textContent = "R$ 0,00"; // Exibe zero quando o carrinho está vazio
-    }
-}
-
-// Função para adicionar item ao carrinho
-function addToCart(name, price) {
-    const existingItem = cartItems.find(item => item.name === name);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        const newItem = {
-            name: name,
-            price: price,
-            quantity: 1
-        };
-        cartItems.push(newItem);
-    }
-    updateMenuQuantity(name, existingItem ? existingItem.quantity + 1 : 1); // Atualiza a quantidade no menu principal
-    updateCartModal(); // Atualiza a interface do carrinho
-}
-
-// Função para remover item do carrinho
-function removeFromCart(name) {
-    const itemIndex = cartItems.findIndex(item => item.name === name);
-    if (itemIndex !== -1) {
-        const item = cartItems[itemIndex];
-        if (item.quantity > 1) {
-            item.quantity -= 1; // Diminui a quantidade no carrinho
-        } else {
-            cartItems.splice(itemIndex, 1); // Remove o item se a quantidade for 1
-        }
-
-        // Atualiza a quantidade no menu principal
-        updateMenuQuantity(name, item.quantity);
-
-        updateCartModal(); // Atualiza o modal do carrinho
-        console.log(`Item removido: ${name}`);
-    }
-}
-
-// Função para atualizar a quantidade no menu principal
-function updateMenuQuantity(name, quantity) {
-    const menuItem = document.querySelector(`.menu-item[data-name="${name}"]`);
-    if (menuItem) {
-        const quantityElement = menuItem.querySelector(".item-quantity");
-        if (quantityElement) {
-            quantityElement.textContent = quantity;
-        }
-    }
-}
-
-// Função para aumentar a quantidade
-function increaseCount(id, button) {
-    console.log(`Aumentando quantidade no button: ${id}`);
-    const countElement = document.getElementById(id);
-    if (countElement) {
-        let currentCount = parseInt(countElement.textContent);
-        countElement.textContent = currentCount + 1;
-    }
-
-    // Captura os dados do botão +
-    const itemName = button.getAttribute("data-name");
-    const itemPrice = parseFloat(button.getAttribute("data-price"));
-
-    console.log(`Dados capturados - Nome: ${itemName}, Preço: ${itemPrice}`);
-    addToCart(itemName, itemPrice);
-}
-
-// Função para diminuir a quantidade
-function decreaseCount(id, button) {
-    console.log(`Diminuindo quantidade: ${id}`);
-    const countElement = document.getElementById(id);
-    if (countElement) {
-        let currentCount = parseInt(countElement.textContent);
-        if (currentCount > 0) {
-            countElement.textContent = currentCount - 1;
-        }
-    }
-
-    // Captura os dados do botão -
-    const itemName = button.getAttribute("data-name");
-    removeFromCart(itemName); // Remove o item do carrinho
-}
-
-// Evento de clique para os botões de incremento e decremento no menu
-menu.addEventListener('click', function(event) {
-    let incrementButton = event.target.closest(".increment-btn");
-    let decrementButton = event.target.closest(".decrement-btn");
-
-    if (incrementButton) {
-        const id = incrementButton.getAttribute("data-id");
-        console.log(`Increment button clicked - ID: ${id}`);
-        increaseCount(id, incrementButton);
-    }
-
-    if (decrementButton) {
-        const id = decrementButton.getAttribute("data-id");
-        console.log(`Decrement button clicked - ID: ${id}`);
-        decreaseCount(id, decrementButton);
-    }
-});
-
-// Evento de clique para os botões de incremento e decremento no carrinho
-cartItemsContainer.addEventListener('click', function(event) {
-    let incrementButton = event.target.closest(".increment-btn");
-    let decrementButton = event.target.closest(".decrement-btn");
-
-    if (incrementButton) {
-        const id = incrementButton.getAttribute("data-id");
-        console.log(`Increment button clicked in cart - ID: ${id}`);
-        increaseCount(id, incrementButton);
-    }
-
-    if (decrementButton) {
-        const id = decrementButton.getAttribute("data-id");
-        console.log(`Decrement button clicked in cart - ID: ${id}`);
-        decreaseCount(id, decrementButton);
-    }
-});
-// Função para calcular o troco
-function calcularTroco() {
-    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
-    const troco = valorPago - total;
-
-    if (!isNaN(troco) && troco >= 0) {
-        trocoMessage = `%0ATroco: R$ ${troco.toFixed(2)}`;
-    } else {
-        trocoMessage = "%0ATroco: Valor insuficiente";
-    } 
-}
-
-// abre o Modal do carrinho
-cartBtn.addEventListener("click", function() {
-    updateCartModal();
-    cartModal.style.display = "flex";
-})
-
-// Fechar Modal clique fora
-cartModal.addEventListener("click", function(event) {
-    if(event.target === cartModal) {
-        cartModal.style.display = "none";
-    }
-})
-
-closedMdalBtn.addEventListener("click", function() {
-    cartModal.style.display = "none";
-})
-
-//--------------------------TROCO e Finalização do Pedido--------------------------------------------
-
-// Função para verificar o valor do troco e exibir/esconder o aviso se necessário
-function verificarValorTroco() {
-    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
-
-    if (paymentMethodSelect.value === "Dinheiro" && (isNaN(valorPago) || valorPago < total)) {
-        trocoWarn.classList.remove("hidden");
-        valueInput.classList.add("border-red-500");
-    } else {
-        trocoWarn.classList.add("hidden");
-        valueInput.classList.remove("border-red-500");
-    }
-}
+const deliveryFee = 2.00; // Taxa de entrega fixa
 
 
-// Atualiza o campo de valor ao digitar
-valueInput.addEventListener("input", verificarValorTroco);
-
-// Função para verificar a opção de pagamento e exibir/esconder o campo de valor
-function verificarOpcao() {
-    if (paymentMethodSelect.value === "_blank") {
-        paymentwarn.classList.remove("hidden");
-        paymentMethodSelect.classList.add("border-red-500");
-    } else {
-        paymentwarn.classList.add("hidden");
-        paymentMethodSelect.classList.remove("border-red-500");
-    }
-
-    // Exibe o campo de valor apenas quando a opção "Dinheiro" é selecionada
-    if (paymentMethodSelect.value === "Dinheiro") {
-        valueCamp.style.display = "block";
-    } else {
-        valueCamp.style.display = "none";
-        trocoWarn.classList.add("hidden"); // Oculta o aviso de troco se a opção não for "Dinheiro"
-        valueInput.classList.remove("border-red-500");
-    }
-}
-
-// Adiciona o listener ao dropdown para executar a verificação
-paymentMethodSelect.addEventListener("change", verificarOpcao);
-
-// Função para verificar o endereço
-function verificarEndereco() {
-    if (addressInput.value === "") {
-        addressWarn.classList.remove("hidden");
-        addressInput.classList.add("border-red-500");
-        return false; // Endereço inválido
-    } else {
-        addressWarn.classList.add("hidden");
-        addressInput.classList.remove("border-red-500");
-        return true; // Endereço válido
-    }
-}
-
-// Event listener para o campo de endereço
-addressInput.addEventListener("input", function() {
-    if (addressInput.value !== "") {
-        addressWarn.classList.add("hidden");
-        addressInput.classList.remove("border-red-500");
-    }
-});
-
-// Função para calcular o troco se a forma de pagamento for dinheiro e o valor for suficiente
-checkoutBtn.addEventListener("click", function () {
-    // Verifica se o carrinho está vazio
-    if (cartItems.length === 0) {
-        alert("Seu carrinho está vazio. Adicione itens antes de finalizar o pedido.");
-        return;
-    }
-    // Verifica o endereço
-    if (!verificarEndereco()) {
-        return; // Interrompe se o endereço for inválido
-    }
-    // Verifica o método de pagamento
-    if (paymentMethodSelect.value === "_blank") {
-        paymentwarn.classList.remove("hidden");
-        paymentMethodSelect.classList.add("border-red-500");
-        return; // Interrompe se o método de pagamento não for selecionado
-    }
-    // Verifica o valor do troco (se o pagamento for em dinheiro)
-    if (paymentMethodSelect.value === "Dinheiro") {
-        const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
-        if (isNaN(valorPago) || valorPago < total) {
-            trocoWarn.classList.remove("hidden");
-            valueInput.classList.add("border-red-500");
-            return; // Interrompe se o valor for insuficiente
-        }
-    }
-    // Recalcula o total antes de enviar a mensagem
-    let totalPedido = 0;
-    cartItems.forEach((item) => {
-        let itemTotal = item.price * item.quantity;
-        if (item.type === "acai" && item.complements && item.complements.length > 0) {
-            item.complements.forEach((complement) => {
-                itemTotal += complement.price * complement.quantity;
-            });
-        }
-        totalPedido += itemTotal;
-    });
-
-    // Adiciona a taxa de entrega ao total
-    const deliveryFee = 2.0; // Taxa de entrega fixa
-    totalPedido += deliveryFee;
-
-    // Gera a mensagem do pedido
-    const cartItemsText = cartItems
-        .map((item) => {
-            let itemText = `${item.name} - Quantidade: ${item.quantity}`;
-            if (item.type === "acai" && item.complements && item.complements.length > 0) {
-                itemText += "\n  Complementos:";
-                item.complements.forEach((complement) => {
-                    itemText += `\n    ${complement.name} - Quantidade: ${complement.quantity}`;
-                });
-            }
-            return itemText;
-        })
-        .join("\n");
-
-    // Adiciona o troco à mensagem (se aplicável)
-    let trocoMessage = "";
-    if (paymentMethodSelect.value === "Dinheiro") {
-        const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
-        const troco = valorPago - totalPedido;
-        trocoMessage = `\nTroco: R$ ${troco.toFixed(2)}`;
-    }
-
-    // Monta a mensagem completa
-    const message = encodeURIComponent(
-        `Pedido:\n${cartItemsText}\n\n` +
-            `Endereço: ${addressInput.value}\n` +
-            `Forma de pagamento: ${paymentMethodSelect.value}\n` +
-            `Obs: ${obsInput.value || "Nenhuma"}\n` +
-            `Total do pedido: R$ ${totalPedido.toFixed(2)}` +
-            trocoMessage
-    );
-
-    // Abre o WhatsApp com a mensagem
-    const phone = "5533988538798"; // Substitua pelo número correto
-    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-
-    // Limpa o carrinho após finalizar o pedido
-    cartItems = [];
-    updateCartModal();
-});
-//-------------------------------------------------Horário de abertura-------------------------------------------------
-function checkRestaurantOpen() {
-    const data = new Date();
-    const dia = data.getDay();
-    const hora = data.getHours();
-
-    return dia >= 1 && dia <= 5 && hora >= 14 && hora < 18;
-}
-
-const spanItem = document.getElementById("date-span");
-const isOpen = checkRestaurantOpen();
-
-if(isOpen) {
-    spanItem.classList.remove("bg-red-500");
-    spanItem.classList.add("bg-green-600");
-} else {
-    spanItem.classList.remove("bg-green-600");
-    spanItem.classList.add("bg-red-500");
-}
 //-------------------------------------------------Container fixo das abas-------------------------------------------------
   document.addEventListener('DOMContentLoaded', function() {
     const tabsContainer = document.getElementById('tabs-container');
@@ -427,16 +55,534 @@ if(isOpen) {
     });
   });
 
-// -------------------------------------------------AÇAÍ FUNCTION-------------------------------------------------
+  //----------------------------------Banner---------------------------------
+  document.addEventListener("DOMContentLoaded", function() {
+    const carousel = document.getElementById("carousel");
+    const images = Array.from(carousel.children);
+    let currentIndex = 0;
+    const totalImages = images.length;
+
+    // Inicializa as posições das imagens
+    images.forEach((image, index) => {
+        image.style.transform = `translateX(${(index - currentIndex) * 100}%)`;
+    });
+
+    function moveToNextImage() {
+        // Atualiza o índice da imagem atual
+        currentIndex = (currentIndex + 1) % totalImages;
+
+        // Aplica a transição para mover todas as imagens
+        images.forEach((image, index) => {
+            image.style.transform = `translateX(${(index - currentIndex) * 100}%)`;
+        });
+    }
+
+    // Inicia o timer para mover a imagem após 3 segundos
+    setInterval(moveToNextImage, 3000);
+});
+//----------------------------------Menu---------------------------------
+
+
+// Função para atualizar o modal do carrinho
+function updateCartModal() {
+    const cartItemsContainer = document.getElementById("cart-items");
+    cartItemsContainer.innerHTML = "";
+    console.log("Atualizando modal do carrinho. Itens no carrinho:", cart); // Use cart aqui
+
+    let totalCartValue = 0;
+
+    cart.forEach(item => { // Use cart aqui
+        const itemElement = document.createElement("div");
+        itemElement.classList.add("flex", "justify-between", "items-center", "mb-4", "p-4", "border", "rounded-lg", "shadow-sm");
+
+        let totalItemValue = 0;
+
+        if (item.type === "acai" || item.type === "salgado") {
+            totalItemValue = (item.price * item.quantity) + (item.complements || []).reduce((sum, complement) => sum + (complement.price * complement.quantity), 0);
+
+            itemElement.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="font-bold">${item.name}</span>
+                    <div class="complements ml-4 mt-2">
+                        ${(item.complements || []).map(complement => `
+                            <div class="complement-item text-sm">
+                                <span>${complement.name} x ${complement.quantity}</span>
+                                <span>${(complement.price * complement.quantity).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <span class="text-sm">Quantidade: ${item.quantity}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold">${totalItemValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
+                    <button 
+                        class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 remove-btn" 
+                        data-id="${item.id}"
+                    >
+                        Remover
+                    </button>
+                    <button 
+                        class="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 decrement-cart-btn" 
+                        data-id="${item.id}"
+                    >
+                        -
+                    </button>
+                    <button 
+                        class="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 increment-cart-btn" 
+                        data-id="${item.id}"
+                    >
+                        +
+                    </button>
+                </div>
+            `;
+        } else if (item.type === "pao") {
+            totalItemValue = (item.price * item.quantity) + (item.additionals || []).reduce((sum, additional) => sum + (additional.price * additional.quantity), 0);
+
+            itemElement.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="font-bold">${item.name}</span>
+                    <div class="additionals ml-4 mt-2">
+                        ${(item.additionals || []).map(additional => `
+                            <div class="additional-item text-sm">
+                                <span>${additional.name} x ${additional.quantity}</span>
+                                <span>${(additional.price * additional.quantity).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <span class="text-sm">Quantidade: ${item.quantity}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold">${totalItemValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
+                    <button 
+                        class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 remove-btn" 
+                        data-id="${item.id}"
+                    >
+                        Remover
+                    </button>
+                    <button 
+                        class="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 decrement-cart-btn" 
+                        data-id="${item.id}"
+                    >
+                        -
+                    </button>
+                    <button 
+                        class="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 increment-cart-btn" 
+                        data-id="${item.id}"
+                    >
+                        +
+                    </button>
+                </div>
+            `;
+        } else {
+            totalItemValue = item.price * item.quantity;
+
+            itemElement.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="font-bold">${item.name}</span>
+                    <span class="text-sm">Quantidade: ${item.quantity}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold">${totalItemValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
+                    <button 
+                        class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 remove-btn" 
+                        data-id="${item.id}"
+                    >
+                        Remover
+                    </button>
+                    <button 
+                        class="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 decrement-cart-btn" 
+                        data-id="${item.id}"
+                    >
+                        -
+                    </button>
+                    <button 
+                        class="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400 increment-cart-btn" 
+                        data-id="${item.id}"
+                    >
+                        +
+                    </button>
+                </div>
+            `;
+        }
+
+        totalCartValue += totalItemValue;
+        cartItemsContainer.appendChild(itemElement);
+    });
+
+    const totalCartElement = document.getElementById("total-cart-value");
+    if (totalCartElement) {
+        totalCartElement.textContent = totalCartValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    // Adiciona eventos de remoção, incremento e decremento
+    document.querySelectorAll(".remove-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const itemId = button.getAttribute("data-id");
+            removeItemCompletely(itemId);
+        });
+    });
+
+    document.querySelectorAll(".decrement-cart-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const itemId = button.getAttribute("data-id");
+            removeFromCart(itemId);
+        });
+    });
+
+    document.querySelectorAll(".increment-cart-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const itemId = button.getAttribute("data-id");
+            const item = cart.find(item => item.id === itemId);
+            if (item) {
+                addToCart(itemId, item.name, item.price);
+            }
+        });
+    });
+}
+
+
+// Função para abrir/fechar o modal do carrinho
+const cartModal = document.getElementById("cart-modal");
+const openCartBtn = document.getElementById("cart-btn");
+const closeCartBtn = document.getElementById("closed-modal-btn");
+
+openCartBtn.addEventListener("click", () => {
+    cartModal.classList.remove("hidden");
+    updateCartModal(); // Atualiza o modal ao abrir
+});
+
+closeCartBtn.addEventListener("click", () => {
+    cartModal.classList.add("hidden");
+});
+
+// Função para adicionar itens ao carrinho
+document.querySelectorAll(".increment-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        const itemId = button.getAttribute("data-id");
+        const itemName = button.getAttribute("data-name");
+        const itemPrice = parseFloat(button.getAttribute("data-price"));
+        addToCart(itemId, itemName, itemPrice);
+    });
+});
+
+// Função para remover itens do carrinho
+document.querySelectorAll(".decrement-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        const itemId = button.getAttribute("data-id");
+        removeFromCart(itemId);
+    });
+});
+
+let cart = []; // Array para armazenar os itens do carrinho
+// Função para adicionar um item ao carrinho
+function addToCart(itemId, itemName, itemPrice) {
+    const existingItem = cart.find(item => item.id === itemId);
+
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({ id: itemId, name: itemName, price: itemPrice, quantity: 1 });
+    }
+
+    console.log("Item adicionado ao carrinho:", { id: itemId, name: itemName, price: itemPrice, quantity: 1 });
+    console.log("Carrinho atual:", cart);
+    console.log("Tamanho do carrinho:", cart.length);
+
+    updateCartCount();
+    updateCartModal(); // Atualiza o modal ao adicionar um item
+    updateMenuCounter(itemId, existingItem ? existingItem.quantity : 1);
+    calculateTotal();
+}
+
+// Função para remover um item do carrinho
+function removeFromCart(itemId) {
+    const itemIndex = cart.findIndex(item => item.id === itemId);
+
+    if (itemIndex !== -1) {
+        const item = cart[itemIndex];
+        if (item.quantity > 1) {
+            item.quantity--;
+        } else {
+            cart.splice(itemIndex, 1);
+        }
+    }
+
+    updateCartCount();
+    updateCartModal(); // Atualiza o modal ao remover um item
+    updateMenuCounter(itemId, cart[itemIndex] ? cart[itemIndex].quantity : 0);
+    calculateTotal();
+}
+
+
+// Função para atualizar o contador do carrinho
+function updateCartCount() {
+    const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById("cart-count").textContent = cartCount;
+}
+
+// Função para atualizar o contador no menu
+function updateMenuCounter(itemId, quantity) {
+    const menuCounter = document.getElementById(itemId);
+    if (menuCounter) {
+        menuCounter.textContent = quantity;
+    }
+}
+// Função para remover completamente um item do carrinho
+function removeItemCompletely(itemId) {
+    const itemIndex = cart.findIndex(item => item.id === itemId);
+
+    if (itemIndex !== -1) {
+        cart.splice(itemIndex, 1);
+    }
+
+    updateCartCount();
+    updateCartModal(); // Atualiza o modal ao remover completamente
+    updateMenuCounter(itemId, 0);
+    calculateTotal();
+}
+
+
+
+// Função para validar o formulário antes de finalizar o pedido
+ document.getElementById("checkout-btn").addEventListener("click", () => {
+    const address = document.getElementById("address").value.trim();
+    const paymentMethod = document.getElementById("Pagamento").value;
+    const troco = document.getElementById("valor").value.trim();
+
+    let isValid = true;
+
+    if (!address) {
+        document.getElementById("address-warn").classList.remove("hidden");
+        isValid = false;
+    } else {
+        document.getElementById("address-warn").classList.add("hidden");
+    }
+
+    if (paymentMethod === "_blank") {
+        document.getElementById("payment-warn").classList.remove("hidden");
+        isValid = false;
+    } else {
+        document.getElementById("payment-warn").classList.add("hidden");
+    }
+
+    if (paymentMethod === "Dinheiro" && (!troco || parseFloat(troco.replace(/\D/g, "")) < total)) {
+        document.getElementById("troco-warn").classList.remove("hidden");
+        isValid = false;
+    } else {
+        document.getElementById("troco-warn").classList.add("hidden");
+    }
+
+    if (isValid) {
+        alert("Pedido finalizado com sucesso!");
+        cart = [];
+        updateCartCount();
+        updateCartModal(); // Atualiza o modal ao finalizar o pedido
+        calculateTotal();
+        cartModal.classList.add("hidden");
+    }
+});
+
+function calculateTotal() {
+    let total = cart.reduce((sum, item) => {
+        // Calcula o preço base do item (preço * quantidade)
+        let itemTotal = item.price * item.quantity;
+
+        // Adiciona o preço dos complementos, se houver (para açaí e salgados)
+        if (item.type === "acai" && item.complements && item.complements.length > 0) {
+            itemTotal += item.complements.reduce((complementSum, complement) => {
+                return complementSum + (complement.price * complement.quantity);
+            }, 0);
+        }
+
+        // Adiciona o preço dos adicionais, se houver (para pães)
+        if (item.type === "pao" && item.additionals && item.additionals.length > 0) {
+            itemTotal += item.additionals.reduce((additionalSum, additional) => {
+                return additionalSum + (additional.price * additional.quantity);
+            }, 0);
+        }
+
+        // Retorna o valor acumulado
+        return sum + itemTotal;
+    }, 0);
+
+    // Adiciona a taxa de entrega ao total
+    total += deliveryFee;
+
+    // Atualiza o total exibido no carrinho
+    document.getElementById("cart-total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+
+//--------------------------Paes--------------------------------------------
+// Variáveis globais específicas para os pães
+let selectedPao = null;
+let selectedPaoAdditionals = {};
+
+// Função para selecionar o tipo de pão
+function selectPao(button) {
+    // Remove a classe "pressed" de todos os botões de pão
+    document.querySelectorAll('.size-btn-pao').forEach(btn => {
+        btn.classList.remove('bg-purple-600', 'text-black');
+    });
+
+    // Armazena o tipo e o preço selecionados
+    selectedPao = {
+        type: button.getAttribute('data-size'),
+        price: parseFloat(button.getAttribute('data-price'))
+    };
+    // Mostra a seção de adicionais dos pães
+    document.getElementById('adicionais-section').classList.remove('hidden');
+}
+
+// Função para ajustar a quantidade de adicionais dos pães
+function adjustPaoAdditionalQuantity(button) {
+    const additionalId = button.getAttribute('data-id');
+    const additionalName = button.getAttribute('data-name');
+    const additionalPrice = parseFloat(button.getAttribute('data-price'));
+    const quantityElement = document.getElementById(additionalId);
+    let quantity = parseInt(quantityElement.textContent);
+
+    if (button.classList.contains('increment-btn-pao')) {
+        quantity += 1;
+    } else if (button.classList.contains('decrement-btn-pao') && quantity > 0) {
+        quantity -= 1;
+    }
+
+    quantityElement.textContent = quantity;
+
+    // Atualiza os adicionais selecionados
+    if (quantity > 0) {
+        selectedPaoAdditionals[additionalName] = {
+            name: additionalName,
+            price: additionalPrice,
+            quantity: quantity
+        };
+    } else {
+        delete selectedPaoAdditionals[additionalName];
+    }
+
+    updateCartModal();
+}
+
+// Função para adicionar pão e adicionais ao carrinho
+function addPaoToOrder() {
+    if (!selectedPao) {
+        alert('Selecione um tipo de pão antes de adicionar ao carrinho.');
+        return;
+    }
+
+    const paoItem = {
+        type: "pao",
+        id: `pao-${selectedPao.type}-${Date.now()}`, // ID único para o item
+        name: selectedPao.type,
+        price: selectedPao.price,
+        quantity: 1,
+        additionals: Object.entries(selectedPaoAdditionals)
+            .filter(([_, details]) => details.quantity > 0)
+            .map(([name, details]) => ({
+                name: name,
+                price: details.price,
+                quantity: details.quantity,
+            })),
+    };
+
+    // Adiciona o pão ao carrinho
+    cart.push(paoItem);
+    // Atualiza o carrinho
+    updateCartCount();
+    updateCartModal();
+    calculateTotal();
+
+    // Limpa as seleções temporárias
+    selectedPao = null;
+    selectedPaoAdditionals = {};
+    document.querySelectorAll('.size-btn-pao').forEach(btn => btn.classList.remove('bg-purple-600', 'text-white'));
+    document.getElementById('adicionais-section').classList.add('hidden');
+    document.querySelectorAll('.increment-btn-pao, .decrement-btn-pao').forEach(btn => {
+        const quantityElement = document.getElementById(btn.getAttribute('data-id'));
+        quantityElement.textContent = 0;
+    });
+
+    alert('Pão adicionado ao carrinho!');
+}
+
+
+
+function updateCartUI() {
+    const cartItemsContainer = document.getElementById("cart-items");
+    const cartCount = document.getElementById("cart-count");
+    const cartTotal = document.getElementById("cart-total");
+
+    cartItemsContainer.innerHTML = "";
+
+    let total = 0;
+    let itemCount = 0;
+
+    cart.forEach((item, index) => { 
+        const itemElement = document.createElement("div");
+        itemElement.classList.add("flex", "justify-between", "items-center", "mb-2");
+
+        const itemName = document.createElement("span");
+        itemName.textContent = `${item.name} (R$ ${item.price.toFixed(2)})`;
+        itemElement.appendChild(itemName);
+
+        if (item.additionals && item.additionals.length > 0) {
+            const additionalsList = document.createElement("ul");
+            additionalsList.classList.add("list-disc", "pl-4");
+
+            item.additionals.forEach(additional => {
+                const additionalItem = document.createElement("li");
+                additionalItem.textContent = `${additional.name} (R$ ${additional.price.toFixed(2)}) x ${additional.quantity}`;
+                additionalsList.appendChild(additionalItem);
+
+                total += additional.price * additional.quantity;
+            });
+
+            itemElement.appendChild(additionalsList);
+        }
+
+        const itemTotal = item.price + item.additionals.reduce((sum, add) => sum + add.price * add.quantity, 0);
+        total += itemTotal;
+
+        const itemPrice = document.createElement("span");
+        itemPrice.textContent = `R$ ${itemTotal.toFixed(2)}`;
+        itemElement.appendChild(itemPrice);
+
+        cartItemsContainer.appendChild(itemElement);
+        itemCount += item.quantity;
+    });
+
+    cartTotal.textContent = `R$ ${total.toFixed(2)}`;
+    cartCount.textContent = itemCount;
+}
+
+function calculatePaoTotal() {
+    let total = 0;
+
+    paoCart.forEach(item => {
+        total += item.price;
+
+        if (item.additionals && item.additionals.length > 0) {
+            item.additionals.forEach(additional => {
+                total += additional.price * additional.quantity;
+            });
+        }
+    });
+
+    return total;
+}
+//--------------------------Açaí--------------------------------------------
 // Função para selecionar o tamanho do açaí
 function togglePressed(button) {
     // Remove a classe "pressed" de todos os botões de tamanho
     document.querySelectorAll('.size-btn').forEach(btn => {
         btn.classList.remove('bg-purple-600', 'text-white');
+        btn.classList.add('bg-white', 'text-black'); // Restaura o estado padrão
     });
 
     // Adiciona a classe "pressed" ao botão clicado
-    button.classList.add('bg-purple-600', 'text-white');
+    button.classList.remove('bg-white', 'text-black'); // Remove o estado padrão
+    button.classList.add('bg-purple-600', 'text-white'); // Aplica o estado "pressed"
 
     // Armazena o tamanho e o preço selecionados
     selectedSize = {
@@ -488,16 +634,15 @@ function adjustComplementQuantity(button) {
         delete selectedComplements[complementName];
     }
 }
-
 // Função para adicionar açaí e complementos ao carrinho
 function addacaiToOrder() {
     if (!selectedSize) {
         alert('Selecione um tamanho de açaí antes de adicionar ao carrinho.');
         return;
     }
-
-    const acaiItem = {
+    const acaiItem = { // Corrigido 'constacaiItem' para 'const acaiItem'
         type: "acai",
+        id: `acai-${selectedSize.size}-${Date.now()}`, // ID único para o item
         name: `Açaí ${selectedSize.size}`,
         price: selectedSize.price,
         quantity: 1,
@@ -509,9 +654,12 @@ function addacaiToOrder() {
                 quantity: details.quantity,
             })),
     };
-
-    cartItems.push(acaiItem);
-
+    // Adiciona o açaí ao carrinho
+    cart.push(acaiItem); 
+    // Atualiza o carrinho
+    updateCartCount(); 
+    updateCartModal(); 
+    calculateTotal(); 
     // Limpa as seleções temporárias
     selectedSize = null;
     selectedComplements = {};
@@ -521,10 +669,9 @@ function addacaiToOrder() {
         const quantityElement = document.getElementById(btn.getAttribute('data-id'));
         quantityElement.textContent = 0;
     });
-
-    updateCartUI();
     alert('Açaí adicionado ao carrinho!');
 }
+
 
 function updateCartUI() {
     const cartItemsContainer = document.getElementById("cart-items");
@@ -535,6 +682,13 @@ function updateCartUI() {
     let total = 0;
     let itemCount = 0;
 
+    // Itera sobre os itens do carrinho e os exibe
+    cart.forEach((item, index) => {
+        const { element, total: itemTotal } = renderCartItem(item, index);
+        cartItemsContainer.appendChild(element);
+        total += itemTotal;
+        itemCount += item.quantity;
+    });
 
     // Atualiza o total e o contador do carrinho
     cartTotal.textContent = 'R$ ' + total.toFixed(2);
@@ -555,96 +709,182 @@ function updateCartUI() {
 
 // Função para remover item do carrinho
 function removeItemFromCart(index) {
-    if (index >= 0 && index < cartItems.length) {
-        cartItems.splice(index, 1);
-        updateCartUI();
-    }
-}
-
-// Função para incrementar a quantidade de um item no carrinho
-function incrementCartItem(index) {
-    console.log("Incrementando item com índice:", index); // Log para depuração
-    if (index >= 0 && index < cartItems.length) {
-        cartItems[index].quantity += 1;
-        console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
-        updateCartUI();
-        updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
-    }
-}
-
-function decrementCartItem(index) {
-    console.log("Decrementando item com índice:", index); // Log para depuração
-    if (index >= 0 && index < cartItems.length) {
-        if (cartItems[index].quantity > 1) {
-            cartItems[index].quantity -= 1;
-            console.log("Nova quantidade:", cartItems[index].quantity); // Log para depuração
-            updateCartUI();
-            updateMenuQuantity(cartItems[index].name, cartItems[index].quantity);
-        } else {
-            removeFromCart(cartItems[index].name);
-        }
-    }
-}
-
-
-
-// Evento de clique para adicionar/remover item no menu
-document.getElementById("menu").addEventListener("click", function(event) {
-    let incrementButton = event.target.closest(".increment-btn");
-    let decrementButton = event.target.closest(".decrement-btn");
-
-    if (incrementButton) {
-        const name = incrementButton.getAttribute("data-name");
-        const price = parseFloat(incrementButton.getAttribute("data-price"));
-        addToCart(name, price);
-    } else if (decrementButton) {
-        const name = decrementButton.getAttribute("data-name");
-        removeFromCart(name);
-    }
-});
-
-// Evento de clique para adicionar/remover item no carrinho
-document.getElementById("cart-items").addEventListener("click", function(event) {
-    let incrementButton = event.target.closest(".increment-btn");
-    let decrementButton = event.target.closest(".decrement-btn");
-
-    if (incrementButton) {
-        const index = parseInt(incrementButton.getAttribute("data-index"));
-        incrementCartItem(index);
-    } else if (decrementButton) {
-        const index = parseInt(decrementButton.getAttribute("data-index"));
-        decrementCartItem(index);
-    }
-});
-
-// Evento de clique para abrir o modal do carrinho
-document.getElementById("cart-btn").addEventListener("click", function() {
-    document.getElementById("cart-modal").classList.remove("hidden");
-});
-
-// Evento de clique para fechar o modal do carrinho
-document.getElementById("closed-modal-btn").addEventListener("click", function() {
-    document.getElementById("cart-modal").classList.add("hidden");
-});
-
-// Removedor visível
-function removeItemCart(name) {
-    const index = cart.findIndex(item => item.name === name);
-    if(index !== -1) {
-        const item = cart[index];
-
-        if(item.quantity > 1) {
-            item.quantity -= 1;
-            updateCartModal();
-            return;
-        }
+    if (index >= 0 && index < cart.length) {
         cart.splice(index, 1);
-        updateCartModal();
+        updateCartUI();
     }
 }
-// Evento de clique para ajustar a quantidade de complementos
-document.getElementById('complementos-section').addEventListener('click', function(event) {
-    if (event.target.classList.contains('increment-acai-btn') || event.target.classList.contains('decrement-acai-btn')) {
-        adjustComplementQuantity(event.target);
+// Vincular eventos aos botões de tamanho do açaí
+document.querySelectorAll('.size-btn').forEach(button => {
+    button.addEventListener('click', () => selectSize(button));
+});
+
+// Vincular eventos aos botões de incremento e decremento dos complementos
+document.querySelectorAll('.increment-acai-btn, .decrement-acai-btn').forEach(button => {
+    button.addEventListener('click', () => adjustComplementQuantity(button));
+});
+
+// Vincular evento ao botão de adicionar ao carrinho
+document.getElementById('add-acai-btn').addEventListener('click', addacaiToOrder);
+
+
+//--------------------------TROCO e Finalização do Pedido--------------------------------------------
+
+
+// Função para calcular o troco
+function calcularTroco() {
+    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
+    const totalPedido = calculateTotal(); // Calcula o total do pedido
+    const troco = valorPago - totalPedido;
+
+    if (isNaN(troco) || troco < 0) {
+        trocoWarn.classList.remove("hidden");
+        valueInput.classList.add("border-red-500");
+    } else {
+        trocoWarn.classList.add("hidden");
+        valueInput.classList.remove("border-red-500");
+    }
+}
+
+// Função para verificar o valor do troco e exibir/esconder o aviso se necessário
+function verificarValorTroco() {
+    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
+    const totalPedido = calculateTotal(); // Calcula o total do pedido
+
+    if (paymentMethodSelect.value === "Dinheiro" && (isNaN(valorPago) || valorPago < totalPedido)) {
+        trocoWarn.classList.remove("hidden");
+        valueInput.classList.add("border-red-500");
+    } else {
+        trocoWarn.classList.add("hidden");
+        valueInput.classList.remove("border-red-500");
+    }
+}
+
+// Atualiza o campo de valor ao digitar
+valueInput.addEventListener("input", verificarValorTroco);
+
+// Função para verificar a opção de pagamento e exibir/esconder o campo de valor
+function verificarOpcao() {
+    if (paymentMethodSelect.value === "_blank") {
+        paymentwarn.classList.remove("hidden");
+        paymentMethodSelect.classList.add("border-red-500");
+    } else {
+        paymentwarn.classList.add("hidden");
+        paymentMethodSelect.classList.remove("border-red-500");
+    }
+
+    // Exibe o campo de valor apenas quando a opção "Dinheiro" é selecionada
+    if (paymentMethodSelect.value === "Dinheiro") {
+        valueCamp.style.display = "block";
+    } else {
+        valueCamp.style.display = "none";
+        trocoWarn.classList.add("hidden"); // Oculta o aviso de troco se a opção não for "Dinheiro"
+        valueInput.classList.remove("border-red-500");
+    }
+}
+
+// Adiciona o listener ao dropdown para executar a verificação
+paymentMethodSelect.addEventListener("change", verificarOpcao);
+
+// Função para verificar o endereço
+function verificarEndereco() {
+    if (addressInput.value.trim() === "") {
+        addressWarn.classList.remove("hidden");
+        addressInput.classList.add("border-red-500");
+        return false; // Endereço inválido
+    } else {
+        addressWarn.classList.add("hidden");
+        addressInput.classList.remove("border-red-500");
+        return true; // Endereço válido
+    }
+}
+
+// Event listener para o campo de endereço
+addressInput.addEventListener("input", function() {
+    if (addressInput.value.trim() !== "") {
+        addressWarn.classList.add("hidden");
+        addressInput.classList.remove("border-red-500");
     }
 });
+
+function calcularTroco() {
+    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
+    const troco = valorPago - total;
+
+    if (!isNaN(troco) && troco >= 0) {
+        trocoMessage = `%0ATroco: R$ ${troco.toFixed(2)}`;
+    } else {
+        trocoMessage = ""; // Limpa o trocoMessage se o valor for insuficiente
+    }
+}
+
+// Finalizar Pedido com verificações atualizadas
+checkoutBtn.addEventListener("click", function() {
+    if (cart.length === 0) return;
+
+    // Verifica endereço
+    if (addressInput.value === "") {
+        addressWarn.classList.remove("hidden");
+        addressInput.classList.add("border-red-500");
+        return;
+    }
+
+    // Verifica método de pagamento
+    if (paymentMethodSelect.value === "_blank") {
+        paymentwarn.classList.remove("hidden");
+        paymentMethodSelect.classList.add("border-red-500");
+        return;
+    }
+
+    // Verifica o valor no campo de troco
+    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
+    if (paymentMethodSelect.value === "Dinheiro" && (isNaN(valorPago) || valorPago < total)) {
+        trocoWarn.classList.remove("hidden");
+        valueInput.classList.add("border-red-500");
+        return;
+    }
+
+    // Calcula o troco apenas se a forma de pagamento for dinheiro e o valor for suficiente
+    const paymentMethod = paymentMethodSelect.value;
+    if (paymentMethod === "Dinheiro" && valorPago >= total) {
+        calcularTroco();
+    } else {
+        trocoMessage = ""; // Zera a mensagem de troco para outras formas de pagamento ou valor insuficiente
+    }
+
+    // Cria a mensagem de pedido para o WhatsApp com a forma de pagamento e o troco (se aplicável)
+    const cartItems = cart.map((item) => {
+        return `${item.name} Quantidade: (${item.quantity})`;
+    }).join("\n");
+
+    const message = encodeURIComponent(cartItems) +
+        `%0AEndereço: ${addressInput.value}` +
+        `%0AForma de pagamento: ${paymentMethod}` +
+        `%0AObs: ${obsInput.value || "Nenhuma"}` +
+        `%0ATotal do pedido: R$ ${total.toFixed(2)}` +
+        trocoMessage;
+
+    const phone = "5533988538798";
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+});
+
+
+//-------------------------------------------------Horário de abertura-------------------------------------------------
+function checkRestaurantOpen() {
+    const data = new Date();
+    const dia = data.getDay();
+    const hora = data.getHours();
+
+    return dia >= 1 && dia <= 5 && hora >= 14 && hora < 18;
+}
+
+const spanItem = document.getElementById("date-span");
+const isOpen = checkRestaurantOpen();
+
+if(isOpen) {
+    spanItem.classList.remove("bg-red-500");
+    spanItem.classList.add("bg-green-600");
+} else {
+    spanItem.classList.remove("bg-green-600");
+    spanItem.classList.add("bg-red-500");
+}
