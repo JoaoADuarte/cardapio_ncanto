@@ -724,8 +724,8 @@ document.querySelectorAll('.increment-acai-btn, .decrement-acai-btn').forEach(bu
     button.addEventListener('click', () => adjustComplementQuantity(button));
 });
 
-// Vincular evento ao botão de adicionar ao carrinho
-document.getElementById('add-acai-btn').addEventListener('click', addacaiToOrder);
+/*// Vincular evento ao botão de adicionar ao carrinho
+document.getElementById('add-acai-btn').addEventListener('click', addacaiToOrder);*/
 
 
 //--------------------------TROCO e Finalização do Pedido--------------------------------------------
