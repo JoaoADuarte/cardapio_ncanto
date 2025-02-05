@@ -87,11 +87,11 @@ const deliveryFee = 2.00; // Taxa de entrega fixa
 function updateCartModal() {
     const cartItemsContainer = document.getElementById("cart-items");
     cartItemsContainer.innerHTML = "";
-    console.log("Atualizando modal do carrinho. Itens no carrinho:", cart); // Use cart aqui
+    console.log("Atualizando modal do carrinho. Itens no carrinho:", cart);
 
     let totalCartValue = 0;
 
-    cart.forEach(item => { // Use cart aqui
+    cart.forEach(item => {
         const itemElement = document.createElement("div");
         itemElement.classList.add("flex", "justify-between", "items-center", "mb-4", "p-4", "border", "rounded-lg", "shadow-sm");
 
@@ -226,7 +226,30 @@ function updateCartModal() {
     document.querySelectorAll(".decrement-cart-btn").forEach(button => {
         button.addEventListener("click", () => {
             const itemId = button.getAttribute("data-id");
-            removeFromCart(itemId);
+            const item = cart.find(item => item.id === itemId);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity -= 1;
+                    // Ajusta a quantidade dos adicionais/complementos
+                    if (item.complements) {
+                        item.complements.forEach(complement => {
+                            if (complement.quantity > 1) {
+                                complement.quantity -= 1;
+                            }
+                        });
+                    }
+                    if (item.additionals) {
+                        item.additionals.forEach(additional => {
+                            if (additional.quantity > 1) {
+                                additional.quantity -= 1;
+                            }
+                        });
+                    }
+                } else {
+                    removeItemCompletely(itemId);
+                }
+                updateCartModal();
+            }
         });
     });
 
@@ -235,12 +258,23 @@ function updateCartModal() {
             const itemId = button.getAttribute("data-id");
             const item = cart.find(item => item.id === itemId);
             if (item) {
-                addToCart(itemId, item.name, item.price);
+                item.quantity += 1;
+                // Ajusta a quantidade dos adicionais/complementos
+                if (item.complements) {
+                    item.complements.forEach(complement => {
+                        complement.quantity += 1;
+                    });
+                }
+                if (item.additionals) {
+                    item.additionals.forEach(additional => {
+                        additional.quantity += 1;
+                    });
+                }
+                updateCartModal();
             }
         });
     });
 }
-
 
 // Função para abrir/fechar o modal do carrinho
 const cartModal = document.getElementById("cart-modal");
