@@ -284,8 +284,8 @@
     <h3 class="font-bold text-3xl">Pães</h3>
   </div>
   <!-- GRID Pães -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-5">
-    <div class="flex gap-2 mb-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-10">
+    <div class="flex gap-2 mb-5">
       <button 
         id="pao-carne-btn" 
         class="size-btn-pao w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300" 
@@ -313,7 +313,7 @@
       </button>
     </div>
 
-    <div class="flex gap-2 mb-10">
+    <div class="flex gap-2 mb-5">
       <button 
         id="pao-linguica-btn" 
         class="size-btn-pao w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300" 
@@ -341,7 +341,7 @@
       </button>
     </div>
 
-    <div class="flex gap-2 mb-10">
+    <div class="flex gap-2 mb-5">
       <button 
         id="pao-carne-pernil-btn" 
         class="size-btn-pao w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300" 
@@ -368,9 +368,6 @@
         </div>
       </button>
     </div>
-
-
-
   </div>
   <!-- Seção de Adicionais dos Pães -->
   <div id="adicionais-section" class="hidden mx-auto max-w-7xl px-2 mb-8 my-2 transition-all duration-300">
@@ -409,9 +406,26 @@
         onclick="adjustPaoAdditionalQuantity(this)">+</button>
     </div>
 
+    <div class="flex items-center mt-2 gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
+      Presunto - R$ 2,00
+      <button 
+        class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn-pao" 
+        data-id="item-Presunto" 
+        data-name="Presunto" 
+        data-price="2.00" 
+        onclick="adjustPaoAdditionalQuantity(this)">-</button>
+      <span id="item-Presunto" class="text-base font-bold">0</span>
+      <button 
+        class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn-pao" 
+        data-id="item-Presunto" 
+        data-name="Presunto" 
+        data-price="2.00" 
+        onclick="adjustPaoAdditionalQuantity(this)">+</button>
+    </div>
+
 
     <button 
-      class="bg-green-500 p-2 rounded mt-4 mb-5" 
+      class="bg-green-800 p-2 text-white rounded mt-4 mb-5" 
       onclick="addPaoToOrder()">Adicionar Pão</button>
   </div>
 </section>
@@ -671,6 +685,45 @@
       </div>
       </div>
      </section>
+<!-------------------------------DOCES-------------------------------------------->
+     <hr class="max-w-7xl border-t-2 border-red-600 my-6 size-auto mx-auto">
+     <section id="Palha" class="py-5">
+      <div class="mx-auto max-w-7xl px-10 mb-8 my-2">
+        <h3 class="font-bold text-3xl">
+            Palha Italiana
+        </h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-7 md:gap-10 mx-auto max-w-7xl px-2" id="menu">
+
+      <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
+        <img
+            src="./assets/Palha.jpg"
+            alt="Palha"
+            class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+        />
+        <div class="w-full">
+            <p class="font-bold">Palha Italiana</p>
+            <p class="text-sm">Leite em pó, brigadeiro branco e óreo</p>
+            <div class="flex justify-items-end gap-3 mt-3">
+            <p class="font-bold text-lg">R$ 4,00</p>
+            
+            <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-Palha-Italiana"
+            data-name="Palha Italiana" 
+            data-price="4.00">-</button>
+           <span id="item-Palha-Italiana" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-Palha-Italiana"
+            data-name="Palha Italiana" 
+            data-price="4.00">+</button>
+            
+            </div>
+        </div>
+      </div>
+      </section>
 <!------------------------------------------------Açaí------------------------------------------------>
 <hr class="max-w-7xl border-t-2 border-purple-600 my-6 size-auto mx-auto">
           <div id="acai-doces" class="p-4 mx-auto">
@@ -678,8 +731,8 @@
                 Monte seu açaí
             </h3>
             <div class="mx-auto max-w-7xl px-2 mb-8 my-2">
-              <button class="size-btn bg-white p-2 rounded hover:bg-purple-600 shadow-md hover:shadow-md duration-300" data-size="300ml" data-price="10.00" onclick="togglePressed(this)">300ml - R$ 10,00</button>
-              <button class="size-btn bg-white p-2 rounded hover:bg-purple-600 shadow-md hover:shadow-md duration-300" data-size="500ml" data-price="15.00" onclick="togglePressed(this)">500ml - R$ 15,00</button>
+              <button class="size-btn bg-white p-2 rounded hover:bg-purple-600 shadow-md hover:shadow-md duration-300" data-size="330ml" data-price="8.00" onclick="togglePressed(this)">330ml - R$ 8,00</button>
+              <button class="size-btn bg-white p-2 rounded hover:bg-purple-600 shadow-md hover:shadow-md duration-300" data-size="550ml" data-price="15.00" onclick="togglePressed(this)">550ml - R$ 13,00</button>
             </div>
           </div>
 
@@ -751,7 +804,7 @@
                 <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-acai-btn" data-id="item-Calda-de-Chocolate" data-name="Calda de Chocolate" data-price="2.00">+</button>
               </div>
             </div>
-            <button class="text-base font-bold bg-green-500 hover:bg-purple-600 hover:scale-110 hover:rotate-2 p-2 rounded ml-4 mt-4 mb-2" onclick="addacaiToOrder()">Adicionar Açaí</button>
+            <button class="text-white font-bold bg-green-800 hover:bg-purple-600 hover:scale-110 hover:rotate-2 p-2 rounded ml-4 mt-4 mb-2" onclick="addacaiToOrder()">Adicionar Açaí</button>
           </div>
      </div>
      </div>

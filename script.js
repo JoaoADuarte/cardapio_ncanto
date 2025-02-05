@@ -208,8 +208,9 @@ function updateCartModal() {
         totalCartValue += totalItemValue;
         cartItemsContainer.appendChild(itemElement);
     });
+    totalCartValue += deliveryFee; // Adiciona a taxa de entrega ao total
 
-    const totalCartElement = document.getElementById("total-cart-value");
+    const totalCartElement = document.getElementById("cart-total");
     if (totalCartElement) {
         totalCartElement.textContent = totalCartValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
@@ -373,8 +374,6 @@ function removeItemCompletely(itemId) {
     }
 
     if (isValid) {
-        alert("Pedido finalizado com sucesso!");
-        cart = [];
         updateCartCount();
         updateCartModal(); // Atualiza o modal ao finalizar o pedido
         calculateTotal();
@@ -384,33 +383,27 @@ function removeItemCompletely(itemId) {
 
 function calculateTotal() {
     let total = cart.reduce((sum, item) => {
-        // Calcula o preço base do item (preço * quantidade)
         let itemTotal = item.price * item.quantity;
 
-        // Adiciona o preço dos complementos, se houver (para açaí e salgados)
+        // Adiciona o preço dos complementos (açaí e salgados)
         if (item.type === "acai" && item.complements && item.complements.length > 0) {
-            itemTotal += item.complements.reduce((complementSum, complement) => {
-                return complementSum + (complement.price * complement.quantity);
-            }, 0);
+            itemTotal += item.complements.reduce((sum, complement) => sum + (complement.price * complement.quantity), 0);
         }
 
-        // Adiciona o preço dos adicionais, se houver (para pães)
+        // Adiciona o preço dos adicionais (pães)
         if (item.type === "pao" && item.additionals && item.additionals.length > 0) {
-            itemTotal += item.additionals.reduce((additionalSum, additional) => {
-                return additionalSum + (additional.price * additional.quantity);
-            }, 0);
+            itemTotal += item.additionals.reduce((sum, additional) => sum + (additional.price * additional.quantity), 0);
         }
 
-        // Retorna o valor acumulado
         return sum + itemTotal;
     }, 0);
 
     // Adiciona a taxa de entrega ao total
     total += deliveryFee;
 
-    // Atualiza o total exibido no carrinho
-    document.getElementById("cart-total").textContent = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    return total;
 }
+
 
 
 //--------------------------Paes--------------------------------------------
@@ -418,21 +411,39 @@ function calculateTotal() {
 let selectedPao = null;
 let selectedPaoAdditionals = {};
 
-// Função para selecionar o tipo de pão
+
 function selectPao(button) {
     // Remove a classe "pressed" de todos os botões de pão
     document.querySelectorAll('.size-btn-pao').forEach(btn => {
-        btn.classList.remove('bg-purple-600', 'text-black');
+        btn.classList.remove('bg-green-800', 'text-white'); // Remove o estilo "pressed"
+        btn.classList.add('bg-white', 'text-black'); // Restaura o estilo padrão
     });
+
+    // Adiciona a classe "pressed" ao botão clicado
+    button.classList.remove('bg-white', 'text-black'); // Remove o estilo padrão
+    button.classList.add('bg-green-800', 'text-white'); // Aplica o estilo "pressed"
 
     // Armazena o tipo e o preço selecionados
     selectedPao = {
         type: button.getAttribute('data-size'),
         price: parseFloat(button.getAttribute('data-price'))
     };
+
     // Mostra a seção de adicionais dos pães
-    document.getElementById('adicionais-section').classList.remove('hidden');
+    const adicionaisSection = document.getElementById('adicionais-section');
+    adicionaisSection.classList.remove('hidden');
+
+    // Rola a página até a seção de adicionais com um deslocamento personalizado
+    const offset = 60; // Ajuste este valor conforme necessário (altura do elemento fixo)
+    const elementPosition = adicionaisSection.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+    window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+    });
 }
+
 
 // Função para ajustar a quantidade de adicionais dos pães
 function adjustPaoAdditionalQuantity(button) {
@@ -821,6 +832,11 @@ function calcularTroco() {
 // Finalizar Pedido com verificações atualizadas
 checkoutBtn.addEventListener("click", function() {
     if (cart.length === 0) return;
+    console.log("Itens no carrinho:", cart); 
+
+    // Atualiza o total antes de construir a mensagem
+    total = calculateTotal();
+    console.log("Total calculado:", total); 
 
     // Verifica endereço
     if (addressInput.value === "") {
@@ -846,28 +862,53 @@ checkoutBtn.addEventListener("click", function() {
 
     // Calcula o troco apenas se a forma de pagamento for dinheiro e o valor for suficiente
     const paymentMethod = paymentMethodSelect.value;
+    let trocoMessage = "";
     if (paymentMethod === "Dinheiro" && valorPago >= total) {
-        calcularTroco();
-    } else {
-        trocoMessage = ""; // Zera a mensagem de troco para outras formas de pagamento ou valor insuficiente
+        const troco = valorPago - total;
+        trocoMessage = `Troco: R$ ${troco.toFixed(2)}`;
     }
 
-    // Cria a mensagem de pedido para o WhatsApp com a forma de pagamento e o troco (se aplicável)
+    // Cria a mensagem de pedido para o WhatsApp
     const cartItems = cart.map((item) => {
-        return `${item.name} Quantidade: (${item.quantity})`;
-    }).join("\n");
-
-    const message = encodeURIComponent(cartItems) +
-        `%0AEndereço: ${addressInput.value}` +
-        `%0AForma de pagamento: ${paymentMethod}` +
-        `%0AObs: ${obsInput.value || "Nenhuma"}` +
-        `%0ATotal do pedido: R$ ${total.toFixed(2)}` +
-        trocoMessage;
-
+        // Inicia com o nome do item e sua quantidade
+        let itemDetails = `*${item.name}* - Quantidade: (${item.quantity})`;
+    
+        // Adiciona complementos (açaí e salgados)
+        if (item.type === "acai" && item.complements && item.complements.length > 0) {
+            itemDetails += "\nComplementos:";
+            itemDetails += item.complements.map(complement => 
+                `\n  • ${complement.name} x ${complement.quantity}`
+            ).join("");
+        }
+    
+        // Adiciona adicionais (pães)
+        if (item.type === "pao" && item.additionals && item.additionals.length > 0) {
+            itemDetails += "\nAdicionais:";
+            itemDetails += item.additionals.map(additional => 
+                `\n  • ${additional.name} x ${additional.quantity}`
+            ).join("");
+        }
+    
+        return itemDetails;
+    }).join("\n\n"); // Separa cada item do carrinho com duas quebras de linha
+    
+    // Monta a mensagem final
+    const message = encodeURIComponent(
+        `*PEDIDO DETALHADO*\n\n` +
+        `${cartItems}\n\n` +
+        `*Endereço: ${addressInput.value}\n` +
+        `*Forma de Pagamento: ${paymentMethod}\n` +
+        `*Observações: ${obsInput.value || "Nenhuma"}\n` +
+        `*Total do Pedido: R$ ${total.toFixed(2)}\n` +
+        `${trocoMessage || ""}`
+    );
+    
+    // Número de telefone (ajuste conforme necessário)
     const phone = "5533988538798";
+    
+    // Abre o link do WhatsApp com a mensagem formatada
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
 });
-
 
 //-------------------------------------------------Horário de abertura-------------------------------------------------
 function checkRestaurantOpen() {
