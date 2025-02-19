@@ -537,6 +537,33 @@
       <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
         <img
             src="./assets/Coca-mini-0.png"
+            alt="Coca lata"
+            class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+        />
+        <div class="w-full">
+            <p class="font-bold">Coca Mini 0 açucar</p>
+            <div class="flex justify-items-end gap-3 mt-3">
+            <p class="font-bold text-lg">R$ 4,00</p>
+            
+            <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+            data-id="item-coca-mini-0"
+            data-name="Coca Mini 0 açucar" 
+            data-price="4.00">-</button>
+           <span id="item-coca-mini-0" class="text-xl font-bold">0</span>
+           <button 
+            class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+            data-id="item-coca-mini-0"
+            data-name="Coca Mini 0 açucar" 
+            data-price="4.00">+</button>
+            
+            </div>
+        </div>
+      </div>
+
+      <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
+        <img
+            src="./assets/Coca-mini-0.png"
             alt="Coca mini lata"
             class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
         />
@@ -1205,6 +1232,7 @@
           <option value="Pix">Pix</option>
           <option value="Credito">Crédito</option>
           <option value="Debito">Débito</option>
+          <option value="Dinheiro_sem_troco">Dinheiro (Sem troco)</option>
           <option value="Dinheiro">Dinheiro</option>
       </select>
 
