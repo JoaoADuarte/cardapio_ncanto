@@ -81,7 +81,7 @@
     <!-- Seções do Cardápio -->
 
     <!------------------------------------------------Promoção------------------------------------------------>
-<hr class="max-w-7xl border-t-2 border-red-600 my-6 size-auto mx-auto">
+<!--<hr class="max-w-7xl border-t-2 border-red-600 my-6 size-auto mx-auto">
 <div id="" class="p-4 mx-auto">
   <h3 class="text-2xl max-w-7xl py-4 mx-auto font-bold text-red-800 mb-2">
       <p class="text-2xl max-w-7xl py-4 mx-auto font-bold text-red-800 mb-2">
@@ -89,8 +89,9 @@
       </p>
   </h3>
 </div>
-
+-->
 <!------------------------------------------Açais Promoção--------------------------------------------->
+<!--
 <div class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-10">
     
   <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
@@ -121,7 +122,7 @@
       </div>
     </div>
 
-  <!--
+  
   <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
     <img
       src="./assets/Granolê.png"
@@ -230,7 +231,7 @@
       </div>
     </div>
   </div>
--->
+
   <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
     <img
       src="./assets/Mrs. Paçoca.jpeg"
@@ -257,7 +258,9 @@
       </div>
     </div>
   </div>
+  -->
   <!-------------------------------------Empadão + combos--------------------------------------->
+  <!--
   <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
     <img
       src="./assets/combo_empada.png"
@@ -285,6 +288,7 @@
       </div>
     </div>
   </div>
+  -->
 <!--
   <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
     <img
@@ -345,6 +349,7 @@
   -->
 
   <!---------------------------------Salgados-------------------------------------------->
+  <!--
   <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
     <img
       src="./assets/combo_esfirra_carne.png"
@@ -372,7 +377,7 @@
       </div>
     </div>
   </div>
-
+-->
 
 
 <!------------------------------------------------Empadas Promoção------------------------------------------------>
@@ -1250,6 +1255,35 @@
 
       <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
         <img
+            src="./assets/dlp.png"
+            alt="DLP"
+            class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+        />
+          <div class="w-full">
+              <p class="font-bold">Doce de Leite em Pó</p>
+              <p class="text-sm">Potinho de doce de leite em pó 155g.</p>
+              <div class="flex justify-items-end gap-3 mt-3">
+              <p class="font-bold text-lg">R$ 8,00</p>
+              
+              <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-btn" 
+              data-id="item-DLP"
+              data-name="Doce de Leite em Pó" 
+              data-price="3.00">-</button>
+              <span id="item-DLP" class="text-xl font-bold">0</span>
+              <button 
+              class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-btn" 
+              data-id="item-DLP"
+              data-name="Doce de Leite em Pó" 
+              data-price="8.00">+</button>
+          
+          </div>
+      </div>
+    </div>
+      
+
+      <div class="w-full flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
+        <img
             src="./assets/Palha.jpg"
             alt="Palha"
             class="w-28 h-24 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
@@ -1667,6 +1701,13 @@
             <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-acai-btn" data-id="item-Confete" data-name="Confete" data-price="1.00">-</button>
             <span id="item-Confete" class="text-base font-bold">0</span>
             <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-acai-btn" data-id="item-Confete" data-name="Confete" data-price="1.00">+</button>
+          </div>
+
+          <div class="flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">
+            Granulado - R$ 1,00
+            <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 decrement-acai-btn" data-id="item-Granulado" data-name="Granulado" data-price="1.00">-</button>
+            <span id="item-Granulado" class="text-base font-bold">0</span>
+            <button class="bg-transparent text-black border px-2 py-0 rounded-lg hover:bg-gray-500 increment-acai-btn" data-id="item-Granulado" data-name="Granulado" data-price="1.00">+</button>
           </div>
           
           <div class="flex items-center gap-2 p-4 bg-white rounded-lg shadow-md hover:shadow-lg duration-300">

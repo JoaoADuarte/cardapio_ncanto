@@ -879,19 +879,26 @@ checkoutBtn.addEventListener("click", function() {
         return;
     }
 
-    // Verifica método de pagamento
+    // Verifica o endereço
+    if (!verificarEndereco()) {
+        return; // Interrompe se o endereço for inválido
+    }
+
+    // Verifica o método de pagamento
     if (paymentMethodSelect.value === "_blank") {
         paymentwarn.classList.remove("hidden");
         paymentMethodSelect.classList.add("border-red-500");
-        return;
+        return; // Interrompe se o método de pagamento não for selecionado
     }
 
-    // Verifica o valor no campo de troco
-    const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
-    if (paymentMethodSelect.value === "Dinheiro" && (isNaN(valorPago) || valorPago < total)) {
-        trocoWarn.classList.remove("hidden");
-        valueInput.classList.add("border-red-500");
-        return;
+    // Verifica o valor do troco (se o pagamento for em dinheiro)
+    if (paymentMethodSelect.value === "Dinheiro") {
+        const valorPago = parseFloat(valueInput.value.replace(/[^\d,]/g, "").replace(",", "."));
+        if (isNaN(valorPago) || valorPago < total) {
+            trocoWarn.classList.remove("hidden");
+            valueInput.classList.add("border-red-500");
+            return; // Interrompe se o valor for insuficiente
+        }
     }
 
     // Calcula o troco apenas se a forma de pagamento for dinheiro e o valor for suficiente
@@ -942,8 +949,11 @@ checkoutBtn.addEventListener("click", function() {
     
     // Abre o link do WhatsApp com a mensagem formatada
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-});
 
+    // Limpa o carrinho após finalizar o pedido
+    cartItems = [];
+    updateCartModal();
+});
 //-------------------------------------------------Horário de abertura-------------------------------------------------
 function checkRestaurantOpen() {
     const data = new Date();
